@@ -2,27 +2,55 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { ref } from "vue";
 
-export const useBusStore = defineStore("buses", () => {
-    const datosData = ref([])
-
-    const obtener = async () => {
+export const useBusStore = defineStore('bus', () => {
+    const buses = ref([])
+    const searchPlaca = ref('');
+    const getBuses = async () => {
         try {
-            const response = await axios.get("bus/buses");
-            datosData.value = response.data;
-            return response.data;
+            let res = await axios.get(`/bus/buses`);
+            buses.value = res.data.buses;
         } catch (error) {
-            console.error('Error al obtener los buses:', error);
+            throw error
+        }
+    }
+    const postBus = async (data) =>{
+        try {
+            let res = await axios.post("bus/bus/agregar", data);
+            return res
+        } catch (error) {
+            throw error
+        }
+    }
+
+    const putEditarBus = async (id, data) => {
+        try {
+            let res = await axios.put(`bus/bus/${id}`, data);
+            return res
+        } catch (error) {
             throw error;
         }
     };
 
+    const putInactivarBus = async (id)=>{
+        try {
+            let res = await axios.put(`bus/inactivarBus/${id}`)
+            return res
+        } catch (error) {
+            console.log(error, "Error al cambiar el estado del bus");
+        }
+    }
+    const putActivarBus = async (id)=>{
+        try {
+            let res = await axios.put(`bus/activarBus/${id}`)
+            return res
+        } catch (error) {
+            console.log(error, "Error al cambiar el estado del bus");
+        }
+    }
 
     return {
-        datosData,
-        obtener,
-      /*   agregarBus,
-        editarBus,
-        activarBus,
-        desactivarBus, */
+        buses,
+        searchPlaca,
+        getBuses, postBus, putEditarBus, putInactivarBus, putActivarBus
     };
 });

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <q-card-section class="row items-center q-pb-none" style="color: rgb(113, 113, 113);">
@@ -24,21 +24,21 @@
       </q-card>
     </q-dialog>
     <div>
-      <h2>Clientes</h2>
+      <h2 style="align-content: center;">Clientes</h2>
       <div class="btn-agregar">
-        <q-btn color="secondary" label="Agregar" @click="agregarCliente()" />
+        <q-btn color="orange-12" text-color="black" label="Agregar Cliente" @click="agregarCliente()" />
       </div>
-      <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
+      <q-table border-color="orange-12" :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-botones="props">
           <q-td :props="props" class="botones">
             <q-btn color="secondary" text-color="black" label="✏️" @click="EditarCliente(props.row._id)" />
-            <q-btn :color="props.row.estado === 1 ? 'orange' : 'amber'" glossy :label="props.row.estado === 1 ? '❌' : '✅'"
+            <q-btn :color="props.row.estado === 1 ? 'orange' : 'orange-12'" glossy :label="props.row.estado === 1 ? '❌' : '✅'"
               @click="toggleLikeDislike(props.row)" />
           </q-td>
         </template>
       </q-table>
       <div class="volver">
-        <q-btn color="amber"><router-link to="/">Volver</router-link></q-btn>
+        <q-btn color="orange-12" text-color="black"><router-link to="/">Volver</router-link></q-btn>
       </div>
     </div>
   </div>
