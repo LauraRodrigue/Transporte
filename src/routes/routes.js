@@ -9,6 +9,7 @@ import horario from "../components/horario.vue";
 import ruta from "../components/ruta.vue";
 import vendedor from "../components/vendedor.vue";
 import home from "../components/home.vue";
+import ventas from "../components/ventas.vue";
 
 const routes = [
   { path: "/", component: login },
@@ -25,6 +26,7 @@ const routes = [
       { path: "/horario", component: horario },
       { path: "/ruta", component: ruta },
       { path: "/vendedor", component: vendedor },
+      { path: "/ventas", component: ventas},
     ],
   },
 ];
