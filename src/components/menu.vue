@@ -1,64 +1,55 @@
 <template>
     <div class="contenedor">
-        <q-layout class="bg-orange-1" view="hHh lpR lFf">
-
+        <q-layout view="hHh lpR fFf">
             <q-header elevated class="bg-orange-10 text-white">
                 <q-toolbar>
                     <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
                     <q-toolbar-title>
                         <q-avatar>
                             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
                         </q-avatar>
-                        Transportes S.A.S
+                        Title
                     </q-toolbar-title>
                 </q-toolbar>
             </q-header>
 
-            <q-drawer class="bg-green-1" v-model="leftDrawerOpen" side="left" behavior="mobile" bordered>
+            <q-drawer class="bg-orange-10" v-model="leftDrawerOpen" side="left" behavior="mobile" elevated>           
+                <div class="q-pa-md q-gutter">
+                    <div class="q-pa-md q-gutter-sm" style="margin-top: 3em;">
+                        <q-avatar color="orange-12" text-color="black" padding="none" icon="face" style="font-size: 7em;" />
+                    </div>
                 <div class="q-pa-md q-gutter-sm">
-                    <q-avatar color="orange-10" text-color="white" icon="face" />
-                </div>
-                <div class="q-pa-md q-gutter-sm">
-                    <h3 style="margin-bottom: 0">Usuario</h3>
+                    <h4 style="margin-bottom: 0">Usuario</h4>
                     <h5 style="margin-bottom: 0">Administrador</h5>
                 </div>
-                <div class="q-pa-md q-gutter-sm" style="font-size: 2em">
-                    <q-icon name="home" />
-                    <router-link to="/home"><q-btn text-color="black" label="Menu"/></router-link><br>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="home" label="Home" style="width: 95%" />
+                </router-link>
+                    <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="aroun" color="orange-12" text-color="black" icon="directions_bus" label="Conductores" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="calendar_today" label="Horarios" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="route" label="Rutas" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="groups" label="Clientes" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="dashboard_customize" label="Ventas" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="book_online" label="Ticket" style="width: 95%" />
+                </router-link>
+                <router-link to="/home" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="left" color="orange-12" text-color="black" icon="support_agent" label="Vendedores" style="width: 95%" />
+                </router-link>
+                <q-linear-progress :value="progress" class="q-mt-md" />
 
-                    <q-icon>
-                        <img src="https://cdn-icons-png.flaticon.com/128/846/846047.png">
-                    </q-icon>
-                    <router-link to="/billete"><q-btn text-color="black" label="boletos" /></router-link><br>
-
-                    <q-icon>
-                        <img src="https://cdn-icons-png.flaticon.com/128/2554/2554966.png">
-                    </q-icon>
-                    <router-link to="/buses"><q-btn text-color="black" label="buses" /></router-link><br>
-
-                    <q-icon name="person" />
-                    <router-link to="/cliente"><q-btn text-color="black" label="clientes" /></router-link><br>
-                
-                    <q-icon>
-                        <img src="https://cdn-icons-png.flaticon.com/128/5283/5283024.png">
-                    </q-icon>
-                    <router-link to="/conductor"><q-btn text-color="black" label="conductores" /></router-link><br>
-
-                    <q-icon name="today" />
-                    <router-link to="/horario"><q-btn text-color="black" label="horarios" /></router-link><br>
-
-                    <q-icon>
-                        <img src="https://cdn-icons-png.flaticon.com/128/5193/5193890.png">
-                    </q-icon>
-                    <router-link to="/ruta"><q-btn text-color="black" label="rutas" /></router-link><br>
-
-                    <q-icon>
-                        <img src="https://cdn-icons-png.flaticon.com/128/2127/2127287.png">
-                    </q-icon>
-                    <router-link to="/vendedor"><q-btn text-color="black" label="vendedores" /></router-link><br>
                 </div>
-
             </q-drawer>
 
             <q-page-container>
@@ -69,7 +60,6 @@
 
     </div>
 </template>
-  
 <script>
 import { ref } from 'vue'
 
