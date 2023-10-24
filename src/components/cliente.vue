@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div class="contenedor" >
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <q-card-section class="row items-center q-pb-none" style="color: rgb(113, 113, 113);">
@@ -9,7 +9,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 60vh" class="scroll">
           <q-input v-model="nuevaCedula" label="Cedula" style="width: 300px;" />
           <q-input v-model="nuevoNombre" label="Nombre" style="width: 300px;" />
           <q-input v-model="nuevaTelefono" label="Telefono" style="width: 300px;" />
@@ -17,18 +17,18 @@
 
         <q-separator />
 
-        <q-card-actions align="right">
+        <q-card-actions align="left">
           <q-btn flat label="Cerrar" color="primary" v-close-popup />
           <q-btn flat label="Guardar " color="primary" @click="guardarCliente()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <div>
-      <h2 style="align-content: center;">Clientes</h2>
+    <div class="cont">
+      <h3 class="text-center">Clientes</h3>
       <div class="btn-agregar">
         <q-btn color="orange-12" text-color="black" label="Agregar Cliente" @click="agregarCliente()" />
       </div>
-      <q-table border-color="orange-12" :rows="rows" :columns="columns" row-key="name">
+      <q-table :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-botones="props">
           <q-td :props="props" class="botones">
             <q-btn color="secondary" text-color="black" label="✏️" @click="EditarCliente(props.row._id)" />
@@ -188,6 +188,16 @@ onMounted(() => {
 .volver {
   width: 100%;
   margin-top: 5px;
+}
+.contenedor{
+  width: 100%;
+  text-align: center;
+  place-items: center;
+  justify-content: center;
+}
+.cont{
+  margin: auto;
+  max-width: 900px;
 }
 </style>
   

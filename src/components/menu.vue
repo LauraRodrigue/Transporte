@@ -25,7 +25,7 @@
                 <router-link to="/home" class="opcioncont" style="font-size: 2em">
                     <q-btn no-caps align="left" color="orange-12" text-color="black" icon="home" label="Home" style="width: 95%" />
                 </router-link>
-                    <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
+                <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
                 <router-link to="/conductor" class="opcioncont" style="font-size: 2em">
                     <q-btn no-caps align="aroun" color="orange-12" text-color="black" icon="directions_bus" label="Conductores" style="width: 95%" />
                 </router-link>
