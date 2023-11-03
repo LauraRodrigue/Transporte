@@ -3,6 +3,38 @@
     margin: 3%;
 }
 
+/* tablas buses */
+.modal-content {
+  width: 400px;
+}
+
+.botones button {
+  margin: 2px;
+}
+
+.btn-agregar {
+  width: 100%;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-end
+}
+
+.volver {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.contenedor {
+  width: 100%;
+  text-align: center;
+  place-items: center;
+  justify-content: center;
+}
+
+.cont {
+  margin: auto;
+  max-width: 1300px;
+}
 
 /* 
 .color1 { #e25858 };
