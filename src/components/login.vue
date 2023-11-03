@@ -4,7 +4,8 @@
 
     <q-card class="my-card bg-orange-2 text-black"  style="height: 410px; width: 350px;">
       <q-card-section class="column flex-center">
-        <q-avatar size="100px" font-size="52px" color="orange-10" text-color="white" icon="face" />
+        <q-avatar class="material-icons-outlined" size="100px" font-size="52px" color="orange-10" text-color="white" icon="face" >
+      </q-avatar>
       </q-card-section>
       <q-card-section>
        <q-form @submit="onSubmit" @reset="onReset">
