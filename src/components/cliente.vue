@@ -1,170 +1,196 @@
 <template>
-  <div class="contenedor" >
+  <div>
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
-        <q-card-section class="row items-center q-pb-none" style="color: rgb(113, 113, 113);">
+        <q-card-section class="row items-center q-pb-none" style="color: black">
           <div class="text-h6">{{ text }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 60vh" class="scroll">
-          <q-input v-model="nuevaCedula" label="Cedula" style="width: 300px;" />
-          <q-input v-model="nuevoNombre" label="Nombre" style="width: 300px;" />
-          <q-input v-model="nuevaTelefono" label="Telefono" style="width: 300px;" />
+        <q-card-section style="max-height: 50vh" class="scroll">
+          <q-input
+            v-model="cedula"
+            label="cedula"
+            style="width: 300px"
+          />
+          <q-input
+            v-model="nombre"
+            label="nombre"
+            style="width: 300px"
+          />
+          <q-input 
+          v-model="telefono" 
+          label="telefono" 
+          style="width: 300px" 
+          />
         </q-card-section>
+    
 
         <q-separator />
 
-        <q-card-actions align="left">
+        <q-card-actions align="right">
           <q-btn flat label="Cerrar" color="primary" v-close-popup />
-          <q-btn flat label="Guardar " color="primary" @click="guardarCliente()" />
+          <q-btn flat label="Guardar" color="primary" @click="agregarEditarCliente" />
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <div class="cont">
-      <h3 class="text-center">Clientes</h3>
-      <div class="btn-agregar">
-        <q-btn color="orange-12" text-color="black" label="Agregar Cliente" @click="agregarCliente()" />
+    <div>
+      <h3>Clientes</h3>
+      <div class="btn-agregar" style="margin-bottom: 5%">
+        <q-btn color="primary" label="Agregar" @click="agregarCliente()" />
       </div>
-      <q-table :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-botones="props">
+      <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
+        <template v-slot:body-cell-estado="props">
+          <q-td :props="props">
+            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
+            <label for="" v-else style="color: red">Inactivo</label>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="secondary" text-color="black" label="✏️" @click="EditarCliente(props.row._id)" />
-            <q-btn :color="props.row.estado === 1 ? 'orange' : 'orange-12'" glossy :label="props.row.estado === 1 ? '❌' : '✅'"
-              @click="toggleLikeDislike(props.row)" />
+            <q-btn
+              color="blue-4"
+              style="margin-right: 5px"
+              text-color="black"
+              @click="EditarCliente(props.row._id)"
+              ><q-icon name="edit"
+            /></q-btn>
+            <q-btn
+              color="green-4"
+              glossy
+              @click="InactivarCliente(props.row._id)"
+              v-if="props.row.estado == 1"
+              ><q-icon name="toggle_on"
+            /></q-btn>
+            <q-btn color="red-4" glossy @click="ActivarCliente(props.row._id)" v-else
+              ><q-icon name="toggle_off"
+            /></q-btn>
           </q-td>
         </template>
       </q-table>
-      <div class="volver">
-        <q-btn color="orange-12" text-color="black"><router-link to="/">Volver</router-link></q-btn>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { format } from 'date-fns';
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import { format } from "date-fns";
+import { useClienteStore } from "../stores/clientes.js";
+const ClienteStore = useClienteStore();
 
-let apiUrl = 'https://transporte-czaa.onrender.com/api/cliente/cliente';
 let clientes = ref([]);
 let rows = ref([]);
-
 let fixed = ref(false);
-let clienteId = ref(null); // Variable para el ID del bus en edición
+let text = ref("");
+let cedula = ref("");
+let nombre = ref();
+let telefono = ref("");
+let cambio = ref(0);
 
 async function obtenerInfo() {
   try {
-    const responseClientes = await axios.get(apiUrl);
-    clientes.value = responseClientes.data.cliente;
-    rows.value = responseClientes.data.cliente;
+    await ClienteStore.getCliente();
+    clientes.value = ClienteStore.clientes;
+    rows.value = ClienteStore.clientes;
   } catch (error) {
-    console.error('Error al obtener la información de los buses:', error);
+    console.log(error);
   }
 }
 
+onMounted(async () => {
+  obtenerInfo();
+});
+
 const columns = [
-  { name: 'cedula', label: 'Cédula', field: 'cedula', sortable: true },
-  { name: 'nombre', label: 'Nombre', field: 'nombre', sortable: true },
-  { name: 'telefono', label: 'Telefono', field: 'telefono' },
-  { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
+  { name: "telefono", label: "Telefono", field: "telefono" },
   {
-    name: 'createAT', label: 'Fecha de Creación', field: 'createAT', sortable: true,
-    format: (val) => format(new Date(val), 'yyyy-MM-dd')
+    name: "estado",
+    label: "Estado",
+    field: "estado",
+    sortable: true,
+    format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
-    name: 'botones', label: 'Opciones',
-    field: row => null,
-    "sortable": false,
+    name: "createAT",
+    label: "Fecha de Creación",
+    field: "createAT",
+    sortable: true,
+    format: (val) => format(new Date(val), "yyyy-MM-dd"),
+  },
+  {
+    name: "opciones",
+    label: "Opciones",
+    field: (row) => null,
+    sortable: false,
   },
 ];
-
-let text = ref('');
-let nuevaCedula = ref('');
-let nuevoNombre = ref('');
-let nuevaTelefono = ref('');
 
 function agregarCliente() {
   fixed.value = true;
   text.value = "Agregar Cliente";
-  nuevaCedula.value = '';
-  nuevoNombre.value = '';
-  nuevaTelefono.value = '';
-  clienteId.value = null; // Resetea el ID del bus en edición
+  cambio.value = 0;
+  limpiar();
 }
 
-function EditarCliente(id) {
-  const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === id);
-  if (clienteSeleccionado) {
-    fixed.value = true;
-    text.value = "Editar Cliente";
-    nuevaCedula.value = cedulaSeleccionado.cedula;
-    nuevoNombre.value = nombreSeleccionado.nombre;
-    nuevaTelefono.value = telefonoSeleccionado.telefono;
-    clienteIdId.value = clienteSeleccionado._id; // Establece el ID del bus en edición
-  }
-}
-
-async function guardarCliente() {
-  try {
-    if (text.value === "Agregar Cliente") {
-      // Crear un nuevo bus
-      const nuevoCliente = {
-        cedula: nuevaCedula.value,
-        nombre: nuevoNombre.value,
-        telefono: nuevaTelefono.value,
-        estado: 1, // Puedes establecer el estado inicial como activo (1)
-      };
-
-      // Realizar la solicitud para crear un nuevo bus en el backend
-      const response = await axios.post(apiUrl, nuevoCliente);
-
-      if (response.status === 201) {
-        // Si se creó exitosamente, agrega el nuevo bus a la lista local
-        clientes.value.push(response.data.cliente);
-        fixed.value = false; // Cierra el diálogo
-      } else {
-        console.error('Error al crear un nuevo bus en el backend');
-      }
-    } else if (text.value === "Editar Cliente") {
-      // Editar un bus existente
-      const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === clientesId.value);
-
-      if (busSeleccionado) {
-        // Actualiza los campos del bus
-        clienteSeleccionado.cedula = nuevaCedula.value;
-        clienteSeleccionado.nombre = nuevoNombre.value;
-        clienteSeleccionado.telefono = nuevaTelefono.value;
-
-        // Realizar la solicitud para actualizar el bus en el backend
-        const response = await axios.put(`${apiUrl}/${clienteSeleccionado._id}`, clienteSeleccionado);
-
-        if (response.status === 200) {
-          fixed.value = false; // Cierra el diálogo
-        } else {
-          console.error('Error al actualizar el bus en el backend');
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error al comunicarse con el backend:', error);
-  }
-}
-
-function toggleLikeDislike(row) {
-  if (row.estado === 1) {
-    row.estado = 0;
+async function agregarEditarCliente() {
+  if (cambio.value === 0) {
+    await ClienteStore.postCliente({
+      cedula: cedula.value,
+      nombre: nombre.value,
+      telefono: telefono.value,
+    });
+    limpiar();
+    obtenerInfo();
+    fixed.value = false;
   } else {
-    row.estado = 1;
+    let id = idCliente.value;
+    if (id) {
+      await ClienteStore.putCliente(id, {
+        cedula: cedula.value,
+        nombre: nombre.value,
+        telefono: telefono.value,
+      });
+      limpiar();
+      obtenerInfo();
+      fixed.value = false;
+    }
   }
 }
 
-onMounted(() => {
+function limpiar() {
+  cedula.value = "";
+  nombre.value = "";
+  telefono.value = "";
+}
+
+let idCliente = ref("");
+async function EditarCliente(id) {
+    cambio.value = 1;
+    const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === id);
+    if (clienteSeleccionado) {
+        idCliente.value = String(clienteSeleccionado._id);
+        fixed.value = true;
+        text.value = "Editar Cliente";
+        cedula.value = clienteSeleccionado.cedula;
+        nombre.value = clienteSeleccionado.nombre;
+        telefono.value = clienteSeleccionado.telefono;
+    }
+}
+
+async function InactivarCliente(id) {
+  await ClienteStore.putClienteInactivar(id);
   obtenerInfo();
-});
+}
+
+async function ActivarCliente(id) {
+  await ClienteStore.putClienteActivar(id);
+  obtenerInfo();
+}
 </script>
 
 
@@ -197,7 +223,7 @@ onMounted(() => {
 }
 .cont{
   margin: auto;
-  max-width: 900px;
+  max-width: 1300px;
 }
 </style>
   
