@@ -2,7 +2,7 @@
   <div>
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
-        <q-card-section class="row items-center q-pb-none" style="color: black">
+        <q-card-section color="orange-12" class="row items-center q-pb-none bg-orange-12">
           <div class="text-h6">{{ text }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
@@ -12,60 +12,59 @@
         <q-card-section style="max-height: 50vh" class="scroll">
           <q-input
             v-model="cedula"
-            label="cedula"
-            style="width: 300px"
+            label="Cédula"
+            style="width: 400px"
           />
           <q-input
             v-model="nombre"
-            label="nombre"
-            style="width: 300px"
+            label="Nombre"
+            style="width: 400px"
           />
           <q-input 
           v-model="telefono" 
-          label="telefono" 
-          style="width: 300px" 
+          label="Telefono" 
+          style="width: 400px" 
           />
         </q-card-section>
     
 
         <q-separator />
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cerrar" color="primary" v-close-popup />
-          <q-btn flat label="Guardar" color="primary" @click="agregarEditarCliente" />
+        <q-card-actions align="center">
+          <q-btn color="orange-10" label="CERRAR" v-close-popup />
+          <q-btn color="green" label="GUARDAR" @click="agregarEditarCliente" />
         </q-card-actions>
       </q-card>
     </q-dialog>
     <div>
-      <h3>Clientes</h3>
+      <h3 align="center">Clientes</h3>
       <div class="btn-agregar" style="margin-bottom: 5%">
-        <q-btn color="primary" label="Agregar" @click="agregarCliente()" />
+        <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
-      <q-table title="Clientes" :rows="rows" :columns="columns" row-key="name">
+      <q-table :rows="rows" :columns="columns" row-key="name">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
-            <label for="" v-else style="color: red">Inactivo</label>
+            <label for="" v-if="props.row.estado == 1">Activo</label>
+            <label for="" v-else>Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
             <q-btn
-              color="blue-4"
+              color="orange-14"
               style="margin-right: 5px"
-              text-color="black"
+
               @click="EditarCliente(props.row._id)"
               ><q-icon name="edit"
             /></q-btn>
             <q-btn
-              color="green-4"
-              glossy
+              color="amber"
               @click="InactivarCliente(props.row._id)"
               v-if="props.row.estado == 1"
-              ><q-icon name="toggle_on"
+              ><q-icon name="cancel"
             /></q-btn>
-            <q-btn color="red-4" glossy @click="ActivarCliente(props.row._id)" v-else
-              ><q-icon name="toggle_off"
+            <q-btn color="amber" @click="ActivarCliente(props.row._id)" v-else
+              ><q-icon name="check_circle_outline"
             /></q-btn>
           </q-td>
         </template>
@@ -197,7 +196,7 @@ async function ActivarCliente(id) {
   
 <style scoped>
 .modal-content {
-  width: 400px;
+  width: 450px;
 }
 
 .botones button {

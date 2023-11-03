@@ -23,8 +23,8 @@
                     <h5 style="margin-bottom: 1em; margin-top:0.5em">Administrador</h5>
                 </div>
                 <router-link to="/home" class="opcioncont" style="font-size: 2em">
-                    <q-btn label="Home">
-                        <q-icon name="home"></q-icon>
+                    <q-btn no-caps align="aroun" color="orange-12" text-color="black" label="Home" style="width: 95%" >
+                        <q-icon name="home"/>  
                     </q-btn>
                 </router-link>
                 <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
@@ -86,7 +86,7 @@ export default {
     justify-content: center
 }
 q-btn{
-    color: orange-12;
+    color: orange-11;
     width: 95%;
     align-items: left;
 }
