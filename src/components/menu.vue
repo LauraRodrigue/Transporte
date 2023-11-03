@@ -23,15 +23,8 @@
                     <h5 style="margin-bottom: 1em; margin-top:0.5em">Administrador</h5>
                 </div>
                 <router-link to="/home" class="opcioncont" style="font-size: 2em">
-<<<<<<< HEAD
                     <q-btn no-caps align="left" label="Home">
                         <q-icon name="home"></q-icon>
-=======
-                   
-                    <q-btn no-caps align="left" color="orange-12" text-color="black" label="Home" style="width: 95%" >
-                        <q-icon name="home" />
-                        <label for="Home"></label>
->>>>>>> 0b69e1bbd86a80f91dafd7c55f23faf7a5af763e
                     </q-btn>
                 </router-link>
                 <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
