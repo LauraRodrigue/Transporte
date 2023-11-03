@@ -3,7 +3,7 @@
 
     </div>
     <div class="row absolute-center ">
-        <div class="menu" v-for="(objeto, i) in tarjeta" :key="i"  :class="`shadow-up-${2}`">
+        <div class="menu" v-for="(objeto, i) in tarjeta" :key="i"  :class="`shadow-up-${6}`">
             <router-link :to="objeto.link" class=" text-orange-12">
                 <q-card class="my-card bg-orange-12 text-orange-10 text-center" style=" height: 200px; width: 150px;">
                 <q-card-section>
