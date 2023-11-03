@@ -9,7 +9,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh;" class="scroll">
           <q-input
             v-model="cedula"
             label="Cédula"
@@ -36,12 +36,12 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <div>
+    <div align="center">
       <h3 align="center">Clientes</h3>
-      <div class="btn-agregar" style="margin-bottom: 5%">
+      <div class="btn-agregar" style="margin-bottom: 5%;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
-      <q-table :rows="rows" :columns="columns" row-key="name">
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
             <label for="" v-if="props.row.estado == 1">Activo</label>
