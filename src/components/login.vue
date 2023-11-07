@@ -11,36 +11,80 @@
        <q-form @submit="onSubmit" @reset="onReset">
           <q-input
             filled
-            v-model="name"
+            v-model="cuenta"
             label="Usuario"
-            lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
-            ]"
+            placeholder="Cuenta"
           />
 
           <q-input
             filled
             type="number"
-            v-model="age"
+            v-model="clave" id="clave"
             label="Contraseña"
-            lazy-rules
-            :rules="[
-              (val) => (val > 0 && val < 100) || 'Please type a real age',
-            ]"
+            placeholder="Contraseña"
           />
 
           <q-toggle v-model="accept" label="I accept the license and terms" />
 
           <div class="text-center">
-            <router-link to="/menu"><q-btn  label="Ingresar" type="submit" color="orange-10" /></router-link>
+            <router-link to="/menu">
+              <q-btn :loading="useAdmin.loading" label="Ingresar" type="submit" color="orange-10" @click="iniciar()">
+                <template v-slot:loading>
+                  <q-spinner-radio />
+                </template> 
+              </q-btn>
+            </router-link>
           </div>
         </q-form>
       </q-card-section>
     </q-card>
     </div>
-
 </template>
+<script>
+import { ref } from 'vue';
+import { useAdminStore } from "../stores/login.js"
+import { useRouter } from "vue-router"
+import { useQuasar } from 'quasar'
+
+export default {
+  setup() {
+    const cuenta = ref('');
+    const clave = ref('');
+    const useAdmin = useAdminStore();
+    const router = useRouter()
+    const $q = useQuasar()
+    console.log(useAdmin.loading);
+
+    async function iniciar() {
+
+      let res = await useAdmin.login(cuenta.value, clave.value);
+      console.log(res);
+      if (!useAdmin.token) {
+        $q.notify({
+          type: 'negative',
+          message: res.response.data.msg
+        });
+      } else {
+        console.log("entra");
+        router.push("/home");
+        $q.notify({
+          type: 'positive',
+          message: 'Inicio Exitoso'
+        });
+      }
+
+
+    }
+
+    return {
+      iniciar,
+      cuenta,
+      clave,
+      useAdmin,
+    };
+  }
+};
+</script>
 <script setup></script>
 
 

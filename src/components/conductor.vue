@@ -30,11 +30,14 @@
         <q-btn color="secondary" label="Agregar" @click="agregarConductor()" />
       </div>
       <q-table title="Conductores" :rows="rows" :columns="columns" row-key="name">
-        <template v-slot:body-cell-botones="props">
+        <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="secondary" text-color="black" label="✏️" @click="EditarConductor(props.row._id)" />
-            <q-btn :color="props.row.estado === 1 ? 'orange' : 'amber'" glossy :label="props.row.estado === 1 ? '❌' : '✅'"
-              @click="toggleLikeDislike(props.row)" />
+            <q-btn
+              color="orange-14"
+              style="margin-right: 5px"
+              @click="EditarCliente(props.row._id)"
+              ><q-icon name="edit"
+            /></q-btn>
           </q-td>
         </template>
       </q-table>
