@@ -191,38 +191,4 @@ async function ActivarCliente(id) {
   obtenerInfo();
 }
 </script>
-
-
-  
-<style scoped>
-.modal-content {
-  width: 450px;
-}
-
-.botones button {
-  margin: 2px;
-}
-
-.btn-agregar {
-  width: 100%;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: flex-end
-}
-
-.volver {
-  width: 100%;
-  margin-top: 5px;
-}
-.contenedor{
-  width: 100%;
-  text-align: center;
-  place-items: center;
-  justify-content: center;
-}
-.cont{
-  margin: auto;
-  max-width: 1300px;
-}
-</style>
   
