@@ -78,6 +78,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useClienteStore } from "../stores/clientes.js";
+import { useQuasar } from 'quasar'
 const ClienteStore = useClienteStore();
 
 let clientes = ref([]);
@@ -88,6 +89,7 @@ let cedula = ref("");
 let nombre = ref();
 let telefono = ref("");
 let cambio = ref(0);
+const $q = useQuasar()
 
 async function obtenerInfo() {
   try {
@@ -137,27 +139,29 @@ function agregarCliente() {
 }
 
 async function agregarEditarCliente() {
-  if (cambio.value === 0) {
-    await ClienteStore.postCliente({
-      cedula: cedula.value,
-      nombre: nombre.value,
-      telefono: telefono.value,
-    });
-    limpiar();
-    obtenerInfo();
-    fixed.value = false;
-  } else {
-    let id = idCliente.value;
-    if (id) {
-      await ClienteStore.putCliente(id, {
+  try {
+    if (cambio.value === 0) {
+      await ClienteStore.postCliente({
         cedula: cedula.value,
         nombre: nombre.value,
         telefono: telefono.value,
       });
-      limpiar();
-      obtenerInfo();
-      fixed.value = false;
+    } else {
+      let id = idCliente.value;
+      if (id) {
+        await ClienteStore.putCliente(id, {
+          cedula: cedula.value,
+          nombre: nombre.value,
+          telefono: telefono.value,
+        });
+      }
     }
+    limpiar();
+    obtenerInfo();
+    fixed.value = false;
+  } catch (error) {
+    $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
+    console.error(error); 
   }
 }
 
