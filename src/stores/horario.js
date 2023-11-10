@@ -3,53 +3,53 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 
-export const useClienteStore = defineStore('cliente', () => {
-    const clientes = ref([])
-    const getCliente = async () => {
+export const useHorarioStore = defineStore('horario', () => {
+    const horarios = ref([])
+    const getHorario = async () => {
         try {
-            let res = await axios.get(`/cliente/cliente`);
-            clientes.value = res.data.cliente;
+            let res = await axios.get(`/horario/horario`);
+            horarios.value = res.data.horario;
         } catch (error) {
             throw error
         }
     }
-    const postCliente = async (data) =>{
+    const postHorario = async (data) =>{
         try {
-            let res = await axios.post("cliente/cliente/agregar", data);
+            let res = await axios.post("horario/agregar", data);
             return res
         } catch (error) {
             throw error
         }
     }
 
-    const putCliente = async (id, data) => {
+    const putHorario = async (id, data) => {
         try {
-            let res = await axios.put(`cliente/cliente/${id}`, data);
+            let res = await axios.put(`horario/horario/${id}`, data);
             return res
         } catch (error) {
             throw error;
         }
     };
 
-    const putClienteInactivar = async (id)=>{
+    const putHorarioInactivar = async (id)=>{
         try {
-            let res = await axios.put(`cliente/inactivarCliente/${id}`)
+            let res = await axios.put(`horario/inactivarHorario/${id}`)
             return res
         } catch (error) {
-            console.log(error, "Error al cambiar el estado del cliente");
+            console.log(error, "Error al cambiar el estado del horario");
         }
     }
-    const putClienteActivar = async (id)=>{
+    const putHorarioActivar = async (id)=>{
         try {
-            let res = await axios.put(`cliente/activarCliente/${id}`)
+            let res = await axios.put(`bus/activarHorario/${id}`)
             return res
         } catch (error) {
-            console.log(error, "Error al cambiar el estado del cliente");
+            console.log(error, "Error al cambiar el estado del horario");
         }
     }
 
     return {
-        clientes,
-        getCliente, postCliente, putCliente, putClienteInactivar, putClienteActivar
+        horarios,
+        getHorario,postHorario, putHorario, putHorarioInactivar, putHorarioActivar
     };
 });

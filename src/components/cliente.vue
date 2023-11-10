@@ -38,7 +38,7 @@
     </q-dialog>
     <div align="center">
       <h3 align="center">Clientes</h3>
-      <div class="btn-agregar" style="margin-bottom: 5%;">
+      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">

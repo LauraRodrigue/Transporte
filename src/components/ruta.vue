@@ -1,4 +1,329 @@
 <template>
-  <div><h1>soy Ventas</h1></div>
+  <div class="container">
+    <!-- Modal -->
+    <q-dialog v-model="fixed">
+      <q-card class="modal-content">
+        <q-card-section color="orange-12" class="row items-center q-pb-none bg-orange-12" style="color: black">
+          <div class="text-h6">{{ text }}</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-separator />
+
+        <q-card-section style="max-height: 50vh" class="scroll">
+          <q-input  type="number"  v-model="precio"  label="Precio"  style="width: 300px"/>
+          <div class="q-pa" style="width: 300px">
+            <div class="q-gutter">
+              <q-select v-model="horario" :options="options" label="Horario" />
+            </div>
+          </div>
+          <q-input  type="text"  v-model="origen"  label="Origen"  style="width: 300px"/>
+          <q-input  type="text"  v-model="destino"  label="Destino"  style="width: 300px"/>
+        </q-card-section>
+        <q-separator />
+        <div class="error">{{errorMessage}}</div>
+
+        <q-card-actions align="right">
+          <q-btn label="Cerrar" color="orange-10" v-close-popup />
+          <q-btn label="Guardar"  color="green"  @click="editarAgregarRuta()"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div align="center">
+      <h3>Rutas</h3>
+      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
+        <q-btn color="green" label="Agregar" @click="agregarRuta()" />
+      </div>
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
+        <template v-slot:body-cell-estado="props">
+          <q-td :props="props">
+            <label for="" v-if="props.row.estado == 1" style="color: green"  >Activo</label>
+            <label for="" v-else style="color: red">Inactivo</label>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-opciones="props">
+          <q-td :props="props" class="botones">
+            <q-btn  color="orange-14"  text-color="white"  icon="edit"  @click="EditarRuta(props.row._id)"/>
+            <q-btn  color="amber"  text-color="white"  icon="cancel"  @click="InactivarRuta(props.row._id)"  v-if="props.row.estado == 1"/>
+            <q-btn  color="amber"  text-color="white"  icon="check_circle_outline"  @click="ActivarRuta(props.row._id)"  v-else/>
+          </q-td>
+        </template>
+      </q-table>
+    </div>
+  </div>
 </template>
-  
+    
+  <script setup>
+import { ref, onMounted } from "vue";
+import { format } from "date-fns";
+import { useHorarioStore } from "../stores/horario.js";
+import { useRutaStore } from "../stores/ruta.js";
+import { useQuasar } from "quasar";
+
+const horarioStore = useHorarioStore();
+const rutaStore = useRutaStore();
+const $q = useQuasar();
+
+let rutas = ref([]);
+let rows = ref([]);
+let fixed = ref(false);
+let options = ref([]);
+let text = ref("");
+let precio = ref();
+let horario = ref("");
+let origen = ref("");
+let destino = ref("");
+let cambio = ref(0);
+
+async function obtenerInfo() {
+  try {
+    await rutaStore.obtenerInfoRutas();
+    rutas.value = rutaStore.rutas;
+    rows.value = rutaStore.rutas;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function obtenerHorarios() {
+  try {
+    await horarioStore.obtenerInfoHorarios();
+    options.value = horarioStore.horarios.map((horario) => ({
+      label: `${horario.hora_partida} - ${horario.hora_llegada}`,
+      value: String(horario._id),
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(async () => {
+  obtenerInfo();
+});
+
+const columns = [
+  { name: "precio", label: "Precio", field: "precio", sortable: true },
+  {
+    name: "hora_partida",
+    label: "Hora Partida",
+    field: (row) => row.horario_id.hora_partida,
+  },
+  {
+    name: "hora_llegada",
+    label: "Hora LLegada",
+    field: (row) => row.horario_id.hora_llegada,
+  },
+  { name: "origen", label: "Origen", field: "origen" },
+  { name: "destino", label: "Destino", field: "destino" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true },
+  {
+    name: "createAT",
+    label: "Fecha de Creación",
+    field: "createAT",
+    sortable: true,
+    format: (val) => format(new Date(val), "yyyy-MM-dd"),
+  },
+  { name: "opciones", label: "Opciones", sortable: false },
+];
+
+function agregarRuta() {
+  obtenerHorarios();
+  fixed.value = true;
+  text.value = "Agregar Ruta";
+  cambio.value = 0;
+}
+
+async function editarAgregarRuta() {
+  validar();
+  if (validacion.value === true) {
+    if (cambio.value === 0) {
+      try {
+        showDefault();
+        await rutaStore.postRuta({
+          precio: precio.value,
+          horario_id: horario._rawValue.value,
+          origen: origen.value,
+          destino: destino.value,
+        });
+        if (notification) {
+          notification();
+        }
+        limpiar();
+        $q.notify({
+          spinner: false,
+          message: "Ruta Agregada",
+          timeout: 2000,
+          type: "positive",
+        });
+        obtenerInfo();
+      } catch (error) {
+        if (notification) {
+          notification();
+        }
+        $q.notify({
+          spinner: false,
+          message: `${error.response.data.error.errors[0].msg}`,
+          timeout: 2000,
+          type: "negative",
+        });
+      }
+    } else {
+      let id = idRuta.value;
+      if (id) {
+        try {
+          showDefault();
+          await rutaStore.putEditarRuta(id, {
+            precio: precio.value,
+            horario_id: horario._rawValue.value,
+            origen: origen.value,
+            destino: destino.value,
+          });
+          if (notification) {
+            notification();
+          }
+          limpiar();
+          $q.notify({
+            spinner: false,
+            message: "Ruta Actualizada",
+            timeout: 2000,
+            type: "positive",
+          });
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          if (notification) {
+            notification();
+          }
+          $q.notify({
+            spinner: false,
+            message: `${error.response.data.error.errors[0].msg}`,
+            timeout: 2000,
+            type: "negative",
+          });
+        }
+        
+      }
+    }
+    validacion.value = false
+  }
+}
+
+function limpiar() {
+  precio.value = "";
+  horario.value = "";
+  origen.value = "";
+  destino.value = "";
+}
+
+let idRuta = ref("");
+async function EditarRuta(id) {
+  obtenerHorarios();
+  cambio.value = 1;
+  const rutaSelected = rutas.value.find((ruta) => ruta._id === id);
+  if (rutaSelected) {
+    idRuta.value = String(rutaSelected._id);
+    fixed.value = true;
+    text.value = "Editar Ruta";
+    precio.value = rutaSelected.precio;
+    horario.value = {
+      label: `${rutaSelected.horario_id.hora_partida} - ${rutaSelected.horario_id.hora_llegada}`,
+      value: String(rutaSelected.horario_id._id),
+    };
+    origen.value = rutaSelected.origen;
+    destino.value = rutaSelected.destino;
+  }
+}
+
+async function InactivarRuta(id) {
+  try{        
+    showDefault();
+    await rutaStore.putInactivarRuta(id);
+    if(notification){ 
+      notification();
+    }
+    $q.notify({
+        spinner: false, 
+        message: "Ruta Inactivada", 
+        timeout: 2000,
+        type: 'positive',
+    }); 
+    obtenerInfo()
+  }catch (error) {
+    if(notification) {
+      notification()
+    };
+    $q.notify({
+        spinner: false, 
+        message: `${error.response.data.error.errors[0].msg}`, 
+        timeout: 2000,
+        type: 'negative',
+    });
+  }
+}
+
+async function ActivarRuta(id) {
+  try{        
+        showDefault()
+        await rutaStore.putActivarRuta(id);
+        if(notification) 
+            notification()
+        
+        $q.notify({
+            spinner: false, 
+            message: "Ruta Activada", 
+            timeout: 2000,
+            type: 'positive',
+        }); 
+        obtenerInfo()
+    }catch (error) {
+        if(notification) {
+            notification()
+        };
+        $q.notify({
+            spinner: false, 
+            message: `${error.response.data.error.errors[0].msg}`, 
+            timeout: 2000,
+            type: 'negative',
+        });
+  }
+}
+
+let errorMessage = ref("");
+
+const showDefault = () => {
+  notification = $q.notify({
+    spinner: true,
+    message: "Please wait...",
+    timeout: 0,
+  });
+};
+
+let validacion = ref(false);
+let notification = ref(null);
+async function validar() {
+  if (!precio.value && !horario.value && !origen.value && !destino.value) {
+    errorMessage.value = "Por favor rellene los campos";
+  } else if (!precio.value) {
+    errorMessage.value = "Ingrese el Precio";
+  } else if (!horario.value) {
+    errorMessage.value = "Eliga un Horario";
+  } else if (!origen.value) {
+    errorMessage.value = "Digite el Origen";
+  }else if(!destino.value){
+    errorMessage.value = "Digite el Destino"
+  } else {
+    errorMessage.value = "";
+    validacion.value = true;
+  }
+}
+</script>
+
+<style scoped>
+.q-table-container .q-td.opciones {
+  text-align: center;
+}
+
+.q-btn.opcion-btn {
+  margin-right: 5px;
+}
+</style>
