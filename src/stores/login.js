@@ -1,38 +1,30 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import { ref } from 'vue';
+import {defineStore} from 'pinia'
+import axios from 'axios'
+import {ref} from'vue'
+import { useRouter } from 'vue-router';
 
-export const useAdminStore = defineStore ("admin",()=>{
-    const token = ref('');
-    const loading = ref(false);
-  
-    const login = async (cuenta, clave) => {
-      console.log(cuenta);
-      console.log(clave);
-  
-      try {
-        loading.value = true;
-        const r = await axios.post("/vendedor/vendedor_datos", { cuenta: cuenta, clave: clave });
-        console.log(r);
-        token.value = r.data.token; 
-        return r;
-      } catch (error) {
-        loading.value = false; 
-        console.log(error);
-        return error; 
-      } finally {
-        loading.value = false;
-      }
-    };
+export const useLoginStore = defineStore('Login', ()=>{
+    const token = ref()
+    let vendedor = ref([])
+    const router = useRouter();
 
-    const logout = () => {
-      token.value = ''; // Establece el token como vacío para indicar que el usuario ha cerrado sesión
-    };
-  
-    return {
-      login,
-      token,
-      loading,
-      logout,
-    };
-  });
+    const Login = async (data) =>{
+        try {
+        
+            let res = await axios.post("/vendedor/vendedor_datos", data);
+            vendedor.value = res.data.vendedor
+            token.value = res.data.token
+            router.push('/home')
+            
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    }
+
+    return{
+        token,vendedor,
+        Login
+    }
+})
