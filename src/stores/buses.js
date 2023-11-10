@@ -14,7 +14,7 @@ export const useBusStore = defineStore('bus', () => {
             throw error
         }
     }
-    const postBus = async (data) =>{
+    const postBus = async (data) => {
         try {
             let res = await axios.post("bus/bus/agregar", data);
             return res
@@ -32,7 +32,7 @@ export const useBusStore = defineStore('bus', () => {
         }
     };
 
-    const putInactivarBus = async (id)=>{
+    const putInactivarBus = async (id) => {
         try {
             let res = await axios.put(`bus/inactivarBus/${id}`)
             return res
@@ -40,7 +40,7 @@ export const useBusStore = defineStore('bus', () => {
             console.log(error, "Error al cambiar el estado del bus");
         }
     }
-    const putActivarBus = async (id)=>{
+    const putActivarBus = async (id) => {
         try {
             let res = await axios.put(`bus/activarBus/${id}`)
             return res
@@ -50,8 +50,6 @@ export const useBusStore = defineStore('bus', () => {
     }
 
     return {
-        buses,
-        searchPlaca,
-        getBuses, postBus, putEditarBus, putInactivarBus, putActivarBus
+        buses, searchPlaca, getBuses, postBus, putEditarBus, putInactivarBus, putActivarBus
     };
 });

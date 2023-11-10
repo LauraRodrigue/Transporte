@@ -44,8 +44,8 @@
             <q-btn color="orange-14" style="margin-right: 5px;" text-color="black"
               @click="EditarBus(props.row._id)"><q-icon name="edit" /></q-btn>
             <q-btn color="amber" glossy @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="toggle_on" /></q-btn>
-            <q-btn color="amber" glossy @click="ActivarBus(props.row._id)" v-else><q-icon name="toggle_off" /></q-btn>
+                name="cancel" /></q-btn>
+            <q-btn color="amber" glossy @click="ActivarBus(props.row._id)" v-else><q-icon name="check_circle_outline" /></q-btn>
           </q-td>
         </template>
       </q-table>
@@ -120,7 +120,7 @@ async function agregarEditarBus() {
     obtenerInfo();
     fixed.value = false;
   } else {
-    let id = idBus.value;
+    let id = idBus.value; // Asegúrate de obtener el id de idBus
     if (id) {
       await busStore.putEditarBus(id, {
         placa: placa.value,
@@ -128,6 +128,7 @@ async function agregarEditarBus() {
         cantidad_asientos: cantidad_asientos.value,
         empresa_asignada: empresa_asignada.value,
       });
+      console.log("no esta entrando")
       limpiar();
       obtenerInfo();
       fixed.value = false;
@@ -156,6 +157,8 @@ async function EditarBus(id) {
     empresa_asignada.value = busSeleccionado.empresa_asignada;
   }
 }
+
+
 
 async function InactivarBus(id) {
   await busStore.putInactivarBus(id);
