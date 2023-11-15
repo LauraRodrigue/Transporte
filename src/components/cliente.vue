@@ -10,23 +10,11 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh;" class="scroll">
-          <q-input
-            v-model="cedula"
-            label="Cédula"
-            style="width: 400px"
-          />
-          <q-input
-            v-model="nombre"
-            label="Nombre"
-            style="width: 400px"
-          />
-          <q-input 
-          v-model="telefono" 
-          label="Telefono" 
-          style="width: 400px" 
-          />
+          <q-input v-model="cedula" label="Cédula" style="width: 400px" />
+          <q-input v-model="nombre" label="Nombre" style="width: 400px" />
+          <q-input v-model="telefono" label="Telefono" style="width: 400px" />
         </q-card-section>
-    
+
 
         <q-separator />
 
@@ -44,28 +32,18 @@
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1">Activo</label>
-            <label for="" v-else>Inactivo</label>
+            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+            <label for="" v-else style="color: red;">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn
-              color="orange-14"
-              style="margin-right: 5px"
-
-              @click="EditarCliente(props.row._id)"
-              ><q-icon name="edit"
-            /></q-btn>
-            <q-btn
-              color="amber"
-              @click="InactivarCliente(props.row._id)"
-              v-if="props.row.estado == 1"
-              ><q-icon name="cancel"
-            /></q-btn>
-            <q-btn color="amber" @click="ActivarCliente(props.row._id)" v-else
-              ><q-icon name="check_circle_outline"
-            /></q-btn>
+            <q-btn color="orange-14" style="margin-right: 5px" @click="EditarCliente(props.row._id)"><q-icon
+                name="edit" /></q-btn>
+            <q-btn color="amber" @click="InactivarCliente(props.row._id)" v-if="props.row.estado == 1"><q-icon
+                name="cancel" /></q-btn>
+            <q-btn color="amber" @click="ActivarCliente(props.row._id)" v-else><q-icon
+                name="check_circle_outline" /></q-btn>
           </q-td>
         </template>
       </q-table>
@@ -161,7 +139,7 @@ async function agregarEditarCliente() {
     fixed.value = false;
   } catch (error) {
     $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
-    console.error(error); 
+    console.error(error);
   }
 }
 
@@ -173,16 +151,16 @@ function limpiar() {
 
 let idCliente = ref("");
 async function EditarCliente(id) {
-    cambio.value = 1;
-    const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === id);
-    if (clienteSeleccionado) {
-        idCliente.value = String(clienteSeleccionado._id);
-        fixed.value = true;
-        text.value = "Editar Cliente";
-        cedula.value = clienteSeleccionado.cedula;
-        nombre.value = clienteSeleccionado.nombre;
-        telefono.value = clienteSeleccionado.telefono;
-    }
+  cambio.value = 1;
+  const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === id);
+  if (clienteSeleccionado) {
+    idCliente.value = String(clienteSeleccionado._id);
+    fixed.value = true;
+    text.value = "Editar Cliente";
+    cedula.value = clienteSeleccionado.cedula;
+    nombre.value = clienteSeleccionado.nombre;
+    telefono.value = clienteSeleccionado.telefono;
+  }
 }
 
 async function InactivarCliente(id) {

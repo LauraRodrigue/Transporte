@@ -34,8 +34,8 @@
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1">Activo</label>
-            <label for="" v-else>Inactivo</label>
+            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+            <label for="" v-else style="color: red;">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">

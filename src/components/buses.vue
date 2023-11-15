@@ -11,22 +11,22 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" class="scroll">
-          <q-input type="text" v-model="placa" label="Placa" style="width: 300px"/>
-          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px"/>
-          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px"/>
-          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px"/>
+          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" />
+          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" />
+          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" />
+          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px" />
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
-              <q-select v-model="ruta" :options="options" label="Rutas"/>
+              <q-select v-model="ruta" :options="options" label="Rutas" />
             </div>
           </div>
         </q-card-section>
 
         <q-separator />
-        <div class="error">{{errorMessage}}</div>
+        <div class="error">{{ errorMessage }}</div>
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
-          <q-btn label="Guardar" color="green" @click="editarAgregarBus()"/>
+          <q-btn label="Guardar" color="green" @click="editarAgregarBus()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -38,17 +38,17 @@
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"
-              >Activo</label
-            >
-            <label for="" v-else style="color: red">Inactivo</label>
+            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
+            <label for="" v-else style="color: red;">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="orange-14" text-color="white" icon="edit" @click="EditarBus(props.row._id)"/>
-            <q-btn color="amber" text-color="white" icon="cancel" @click="InactivarBus(props.row._id)" v-if="props.row.estado == 1"/>
-            <q-btn color="amber" text-color="white" icon="check_circle_outline" @click="ActivarBus(props.row._id)" v-else />
+            <q-btn color="orange-14" text-color="white" icon="edit" @click="EditarBus(props.row._id)" />
+            <q-btn color="amber" text-color="white" icon="cancel" @click="InactivarBus(props.row._id)"
+              v-if="props.row.estado == 1" />
+            <q-btn color="amber" text-color="white" icon="check_circle_outline" @click="ActivarBus(props.row._id)"
+              v-else />
           </q-td>
         </template>
       </q-table>
@@ -96,17 +96,17 @@ async function obtenerInfo() {
 // });
 
 async function obtenerRutas() {
-      try {
-          await rutaStore.obtenerInfoRutas();
-          options.value = rutaStore.rutas.map((ruta) => (
-            {
-              label: `${ruta.precio} - ${ruta.origen} - ${ruta.destino}`,
-              value: String(ruta._id)
-          }));
-      } catch (error) {
-          console.log(error);
-      }
+  try {
+    await rutaStore.obtenerInfoRutas();
+    options.value = rutaStore.rutas.map((ruta) => (
+      {
+        label: `${ruta.precio} - ${ruta.origen} - ${ruta.destino}`,
+        value: String(ruta._id)
+      }));
+  } catch (error) {
+    console.log(error);
   }
+}
 
 onMounted(async () => {
   obtenerInfo();
@@ -114,18 +114,20 @@ onMounted(async () => {
 
 const columns = [
   { name: "placa", label: "Placa", field: "placa", sortable: true },
-  { name: "numero_bus",label: "Número de Bus",field: "numero_bus",sortable: true,},
-  { name: "cantidad_asientos",label: "Cantidad de Asientos",field: "cantidad_asientos",},
-  { name: "empresa_asignada",label: "Empresa Asignada",field: "empresa_asignada",},
-  { name: "precio", label: "Ruta Precio", field: (row)=>row.ruta_id.precio},
-  { name: "origen", label: "Ruta Origen", field: (row)=>row.ruta_id.origen},
-  { name: "destino", label: "Ruta Destino", field: (row)=>row.ruta_id.destino},
-  { name: "hora_partida", label: "Ruta Horario Partida", field: (row)=>row.ruta_id.horario_id.hora_partida},
-  { name: "hora_llegada", label: "Ruta Horario Llegada", field: (row)=>row.ruta_id.horario_id.hora_llegada},
+  { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, },
+  { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", },
+  { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", },
+  { name: "precio", label: "Ruta Precio", field: (row) => row.ruta_id.precio },
+  { name: "origen", label: "Ruta Origen", field: (row) => row.ruta_id.origen },
+  { name: "destino", label: "Ruta Destino", field: (row) => row.ruta_id.destino },
+  { name: "hora_partida", label: "Ruta Horario Partida", field: (row) => row.ruta_id.horario_id.hora_partida },
+  { name: "hora_llegada", label: "Ruta Horario Llegada", field: (row) => row.ruta_id.horario_id.hora_llegada },
   { name: "estado", label: "Estado", field: "estado", sortable: true },
-  { name: "createAT",label: "Fecha de Creación",field: "createAT",sortable: true,
-  format: (val) => format(new Date(val), "yyyy-MM-dd"),},
-  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false,},
+  {
+    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true,
+    format: (val) => format(new Date(val), "yyyy-MM-dd"),
+  },
+  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, },
 ];
 
 function agregarBus() {
@@ -141,7 +143,7 @@ async function editarAgregarBus() {
     if (cambio.value === 0) {
       try {
         showDefault();
-         await busStore.postBus({
+        await busStore.postBus({
           placa: placa.value,
           numero_bus: numero_bus.value,
           cantidad_asientos: cantidad_asientos.value,
@@ -170,7 +172,7 @@ async function editarAgregarBus() {
           type: "negative",
         });
       }
-   
+
     } else {
       let id = idBus.value;
       if (id) {
@@ -194,18 +196,18 @@ async function editarAgregarBus() {
           });
           obtenerInfo();
           fixed.value = false;
-          } catch (error) {
-            if (notification) {
-              notification();
-            }
-            $q.notify({
-              spinner: false,
-              message: `${error.response.data.error.errors[0].msg}`,
-              timeout: 2000,
-              type: "negative",
-            });
+        } catch (error) {
+          if (notification) {
+            notification();
+          }
+          $q.notify({
+            spinner: false,
+            message: `${error.response.data.error.errors[0].msg}`,
+            timeout: 2000,
+            type: "negative",
+          });
         }
-       
+
       }
     }
   }
@@ -216,7 +218,7 @@ function limpiar() {
   numero_bus.value = "";
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
-  ruta.value= ""
+  ruta.value = ""
 }
 
 let idBus = ref("");
@@ -233,65 +235,65 @@ async function EditarBus(id) {
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
     ruta.value = {
-                    label: `${busSeleccionado.ruta_id.origen} - ${busSeleccionado.ruta_id.destino}` ,
-                    value: String(busSeleccionado.ruta_id._id)
-                  }
+      label: `${busSeleccionado.ruta_id.origen} - ${busSeleccionado.ruta_id.destino}`,
+      value: String(busSeleccionado.ruta_id._id)
+    }
   }
 }
 
 async function InactivarBus(id) {
-  try{        
+  try {
     showDefault();
     await busStore.putInactivarBus(id);
-    if(notification){
+    if (notification) {
       notification();
     }
     $q.notify({
-        spinner: false,
-        message: "Bus Inactivado",
-        timeout: 2000,
-        type: 'positive',
+      spinner: false,
+      message: "Bus Inactivado",
+      timeout: 2000,
+      type: 'positive',
     });
     obtenerInfo()
-  }catch (error) {
-    if(notification) {
+  } catch (error) {
+    if (notification) {
       notification()
     };
     $q.notify({
-        spinner: false,
-        message: `${error.response.data.error.errors[0].msg}`,
-        timeout: 2000,
-        type: 'negative',
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
     });
   }
 }
 
 async function ActivarBus(id) {
-  try{        
+  try {
     showDefault();
     await busStore.putActivarBus(id);
-    if(notification){
+    if (notification) {
       notification();
     }
     $q.notify({
-        spinner: false,
-        message: "Bus Activado",
-        timeout: 2000,
-        type: 'positive',
+      spinner: false,
+      message: "Bus Activado",
+      timeout: 2000,
+      type: 'positive',
     });
     obtenerInfo()
-  }catch (error) {
-    if(notification) {
+  } catch (error) {
+    if (notification) {
       notification()
     };
     $q.notify({
-        spinner: false,
-        message: `${error.response.data.error.errors[0].msg}`,
-        timeout: 2000,
-        type: 'negative',
+      spinner: false,
+      message: `${error.response.data.error.errors[0].msg}`,
+      timeout: 2000,
+      type: 'negative',
     });
   }
- 
+
 
 }
 
@@ -317,9 +319,9 @@ async function validar() {
     errorMessage.value = "Ingrese el numero del bus";
   } else if (!cantidad_asientos.value) {
     errorMessage.value = "Ingrese la cantidad de asientos";
-  }else if(!empresa_asignada.value){
+  } else if (!empresa_asignada.value) {
     errorMessage.value = "Ingrese el nombre de la empresa"
-  }else if(!ruta.value){
+  } else if (!ruta.value) {
     errorMessage.value = "Seleccione una ruta"
   } else {
     errorMessage.value = "";

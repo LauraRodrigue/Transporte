@@ -3,13 +3,13 @@ import login from "../components/login.vue";
 import buses from "../components/buses.vue";
 import menu from "../components/menu.vue";
 import cliente from "../components/cliente.vue";
-import billete from "../components/billete.vue";
+import billete from "../components/boleto.vue";
 import conductor from "../components/conductor.vue";
 import horario from "../components/horario.vue";
 import ruta from "../components/ruta.vue";
 import vendedor from "../components/vendedor.vue";
 import home from "../components/home.vue";
-import ventas from "../components/ventas.vue";
+import ventas from "../components/venta.vue";
 
 const routes = [
   { path: "/", component: login },
