@@ -15,7 +15,7 @@
           <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" />
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
-              <q-select v-model="bus" :options="options" label="Bus" />
+              <q-select v-model="bus" :options="options" label="ID Bus" />
             </div>
           </div>
           <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" />
@@ -130,6 +130,7 @@ function agregarConductor() {
   fixed.value = true;
   text.value = "Agregar Conductor";
   cambio.value = 0;
+  limpiar();
 }
 
 async function editarAgregarConductor() {
@@ -212,7 +213,7 @@ function limpiar() {
   nombre.value = "";
   bus.value = "";
   experiencia.value = "";
-  telefono.value = ""
+  telefono.value = "";
 }
 
 let idConductor = ref("");
