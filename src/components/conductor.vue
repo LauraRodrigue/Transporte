@@ -34,7 +34,7 @@
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar " @click="agregarConductor()" />
       </div>
-      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%;" >
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%;" table-class="jose">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
             <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -113,16 +113,16 @@ onMounted(async () => {
 });
 
 const columns= [ 
-  { align:"left", name: "cedula", label: "Cedula", field: "cedula", sortable: true },
-  { align:"left", name: "nombre", label: "Nombre", field: "nombre",sortable: true },
-  { name: "id_bus", label: "Placa",  align:"center",field: (row) => row.id_bus.placa },
-  { name: "id_bus", label: "Empresa Bus", field: (row) => row.id_bus.empresa_asignada },
-  { name: "id_bus", label: "Numero Bus", field: (row) => row.id_bus.numero_bus },
-  { name: "experiencia", label: "Experiencia", field: "experiencia" },
-  { name: "telefono", label: "Telefono", field: "telefono" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true },
-  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"), },
-  { name: "opciones", label: "Opciones", sortable: false, },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align:"left" },
+  { name: "nombre", label: "Nombre", field: "nombre",sortable: true , align:"left" },
+  { name: "id_bus", label: "Placa",  field: (row) => row.id_bus.placa,align:"center" },
+  { name: "id_bus", label: "Empresa Bus", field: (row) => row.id_bus.empresa_asignada,align:"center" },
+  { name: "id_bus", label: "Numero Bus", field: (row) => row.id_bus.numero_bus,align:"center" },
+  { name: "experiencia", label: "Experiencia", field: "experiencia",align:"center" },
+  { name: "telefono", label: "Telefono", field: "telefono",align:"center" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center" },
+  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true,align:"center", format: (val) => format(new Date(val), "yyyy-MM-dd"), },
+  { name: "opciones", label: "Opciones", sortable: false,align:"center" },
 ];
 
 function agregarConductor() {
@@ -344,5 +344,9 @@ async function validar() {
 .volver {
   width: 100%;
   margin-top: 5px;
+}
+
+.jose{
+  text-align: left;
 }
 </style>

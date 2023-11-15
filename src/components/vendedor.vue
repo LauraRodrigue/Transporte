@@ -88,16 +88,17 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
-  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true },
-  { name: "clave", label: "Clave", field: "clave", sortable: true },
-  { name: "telefono", label: "Telefono", field: "telefono" },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true,align:"center" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true,align:"center" },
+  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true,align:"center" },
+  { name: "clave", label: "Clave", field: "clave", sortable: true,align:"center"},
+  { name: "telefono", label: "Telefono", field: "telefono",align:"center"},
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
+    align:"center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -105,6 +106,7 @@ const columns = [
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
+    align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -112,6 +114,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align:"center"
   },
 ];
 

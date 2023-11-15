@@ -84,20 +84,21 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: 'hora_partida', label: 'Hora_partida', field: 'hora_partida', sortable: true },
-  { name: 'hora_llegada', label: 'Hora_llegada', field: 'hora_llegada', sortable: true },
-  { name: 'fecha_partida', label: 'Fecha_partida', field: 'fecha_partida', sortable: true },
-  { name: 'fecha_llegada', label: 'Fecha_llegada', field: 'fecha_llegada', sortable: true },
+  { name: 'hora_partida', label: 'Hora_partida', field: 'hora_partida', sortable: true,align:"center" },
+  { name: 'hora_llegada', label: 'Hora_llegada', field: 'hora_llegada', sortable: true,align:"center" },
+  { name: 'fecha_partida', label: 'Fecha_partida', field: 'fecha_partida', sortable: true,align:"center" },
+  { name: 'fecha_llegada', label: 'Fecha_llegada', field: 'fecha_llegada', sortable: true,align:"center" },
   
-  { name: 'estado', label: 'Estado', field: 'estado', sortable: true, format: (val) => (val ? 'Activo' : 'Inactivo') },
+  { name: 'estado', label: 'Estado', field: 'estado', sortable: true,align:"center", format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
-      name: 'createAT', label: 'Fecha de Creación', field: 'createAT', sortable: true,
+      name: 'createAT', label: 'Fecha de Creación', field: 'createAT', sortable: true,align:"center",
       format: (val) => format(new Date(val), 'yyyy-MM-dd')
   },
   {
       name: 'opciones', label: 'Opciones',
       field: row => null,
       "sortable": false,
+      align:"center"
   },
 ];
 

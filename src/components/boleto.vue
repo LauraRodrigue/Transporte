@@ -58,17 +58,18 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "vendedor_id", label: "Vendedor", field: "vendedor_id", sortable: true },
-  { name: "cliente_id", label: "Cliente", field: "cliente_id", sortable: true },
-  { name: "bus_id", label: "Bus", field: "bus_id" },
-  { name: "no_asiento", label: "N° Asiento", field: "no_asiento" },
-  { name: "fecha_departida", label: "Fecha Partida", field: "fecha_departida" },
-  { name: "fechahora_venta", label: "Fecha Venta", field: "fechahora_venta" },
+  { name: "vendedor_id", label: "Vendedor", field: "vendedor_id", sortable: true,align:"center" },
+  { name: "cliente_id", label: "Cliente", field: "cliente_id", sortable: true,align:"center" },
+  { name: "bus_id", label: "Bus", field: "bus_id",align:"center" },
+  { name: "no_asiento", label: "N° Asiento", field: "no_asiento",align:"center" },
+  { name: "fecha_departida", label: "Fecha Partida", field: "fecha_departida",align:"center" },
+  { name: "fechahora_venta", label: "Fecha Venta", field: "fechahora_venta",align:"center"},
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
+    align:"center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -76,6 +77,7 @@ const columns = [
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
+    align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -83,6 +85,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align:"center"
   },
 ];
 
