@@ -9,11 +9,13 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 60vh;" >
-          <q-input v-model="cedula" label="Cédula" style="width: 380px" />
-          <q-input v-model="nombre" label="Nombre" style="width: 380px" />
-          <q-input v-model="telefono" label="Telefono" style="width: 380px" />
-        </q-card-section>
+        <q-card-section style="max-height: 60vh;" @submit.prevent="validar">
+      <q-input v-model="cedula" label="Cédula" style="width: 380px" />
+      <q-input v-model="nombre" label="Nombre" style="width: 380px" />
+      <q-input v-model="telefono" label="Telefono" style="width: 380px" />
+
+      <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
+    </q-card-section>
 
 
         <q-separator />
@@ -117,6 +119,8 @@ function agregarCliente() {
 }
 
 async function agregarEditarCliente() {
+  validar();
+  if (validacion.value) {
   try {
     if (cambio.value === 0) {
       await ClienteStore.postCliente({
@@ -141,6 +145,7 @@ async function agregarEditarCliente() {
     $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
     console.error(error);
   }
+}
 }
 
 function limpiar() {
@@ -172,11 +177,25 @@ async function ActivarCliente(id) {
   await ClienteStore.putClienteActivar(id);
   obtenerInfo();
 }
-</script>
 
-<style setup>
+let errorMessage = ref(""); // Nuevo estado para mensajes de error
 
-.q-table__middle.scroll{
-  text-align: left;
+async function validar() {
+  // Restablecer el mensaje de error antes de realizar la validación
+  errorMessage.value = "";
+
+  if (!cedula.value && !nombre.value && !telefono.value) {
+    errorMessage.value = "Ingrese la cédula, el nombre y el teléfono";
+  } else if (!cedula.value) {
+    errorMessage.value = "Ingrese la cédula";
+  } else if (!nombre.value) {
+    errorMessage.value = "Ingrese el nombre";
+  } else if (!telefono.value) {
+    errorMessage.value = "Ingrese el teléfono";
+  }
+
+  // Actualizar el estado de validación
+  validacion.value = errorMessage.value === "";
+
 }
-</style>
+</script>
