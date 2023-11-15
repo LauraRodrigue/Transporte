@@ -43,7 +43,7 @@
                 <router-link to="/cliente" class="opcioncont" style="font-size: 2em">
                     <q-btn no-caps align="left" color="orange-12" text-color="black" icon="groups" label="Clientes" style="width: 95%" />
                 </router-link>
-                <router-link to="/venta" class="opcioncont" style="font-size: 2em">
+                <router-link to="/ventas" class="opcioncont" style="font-size: 2em">
                     <q-btn no-caps align="left" color="orange-12" text-color="black" icon="dashboard_customize" label="Ventas" style="width: 95%" />
                 </router-link>
                 <router-link to="/billete" class="opcioncont" style="font-size: 2em">
