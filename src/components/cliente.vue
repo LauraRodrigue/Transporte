@@ -3,16 +3,16 @@
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
         <q-card-section color="orange-12" class="row items-center q-pb-none bg-orange-12">
-          <div class="text-h6">{{ text }}</div>
+          <div class="text-h6" >{{ text }}</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh;" class="scroll">
-          <q-input v-model="cedula" label="Cédula" style="width: 400px" />
-          <q-input v-model="nombre" label="Nombre" style="width: 400px" />
-          <q-input v-model="telefono" label="Telefono" style="width: 400px" />
+        <q-card-section style="max-height: 60vh;" >
+          <q-input v-model="cedula" label="Cédula" style="width: 380px" />
+          <q-input v-model="nombre" label="Nombre" style="width: 380px" />
+          <q-input v-model="telefono" label="Telefono" style="width: 380px" />
         </q-card-section>
 
 
@@ -26,12 +26,12 @@
     </q-dialog>
     <div align="center">
       <h3 align="center">Clientes</h3>
-      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
+      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%; text-align: left;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
-      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
-        <template v-slot:body-cell-estado="props">
-          <q-td :props="props">
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%" >
+        <template v-slot:body-cell-estado="props" >
+          <q-td :props="props" >
             <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
             <label for="" v-else style="color: red;">Inactivo</label>
           </q-td>
@@ -84,14 +84,15 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
-  { name: "telefono", label: "Telefono", field: "telefono" },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align:"center" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align:"center" },
+  { name: "telefono", label: "Telefono", field: "telefono" , align:"center" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
+    align:"center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -99,6 +100,7 @@ const columns = [
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
+    align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -106,6 +108,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align:"center",
   },
 ];
 
@@ -173,4 +176,3 @@ async function ActivarCliente(id) {
   obtenerInfo();
 }
 </script>
-  
