@@ -34,7 +34,7 @@
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar " @click="agregarConductor()" />
       </div>
-      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%;" >
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
             <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -112,10 +112,10 @@ onMounted(async () => {
   obtenerInfo();
 });
 
-const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true },
-  { name: "id_bus", label: "Placa", field: (row) => row.id_bus.placa },
+const columns= [ 
+  { align:"left", name: "cedula", label: "Cedula", field: "cedula", sortable: true },
+  { align:"left", name: "nombre", label: "Nombre", field: "nombre",sortable: true },
+  { name: "id_bus", label: "Placa",  align:"center",field: (row) => row.id_bus.placa },
   { name: "id_bus", label: "Empresa Bus", field: (row) => row.id_bus.empresa_asignada },
   { name: "id_bus", label: "Numero Bus", field: (row) => row.id_bus.numero_bus },
   { name: "experiencia", label: "Experiencia", field: "experiencia" },
@@ -331,6 +331,8 @@ async function validar() {
 .botones button {
   margin: 2px;
 }
+
+
 
 .btn-agregar {
   width: 100%;
