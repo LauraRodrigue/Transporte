@@ -3,37 +3,37 @@
       <!-- Modal -->
         <q-dialog v-model="fixed">
             <q-card class="modal-content">
-                <q-card-section class="row items-center q-pb-none" style="color: black">
+                <q-card-section color="orange-12" class="row items-center q-pb-none bg-orange-12" >
                     <div class="text-h6">{{ text }}</div>
                     <q-space />
                     <q-btn icon="close" flat round dense v-close-popup />
                 </q-card-section>
             <q-separator />
             <q-card-section style="max-height: 50vh" class="scroll">
-                <div class="q-pa" style="width: 300px;">
+                <div class="q-pa" style="width: 350px;">
                     <div class="q-gutter">
                         <q-select v-model="ruta" :options="optionsRutas" label="Rutas" />
                     </div>
                 </div>
-                <div class="q-pa" style="width: 300px;">
+                <div class="q-pa" style="width: 350px;">
                     <div class="q-gutter">
                         <q-select v-model="bus" :options="optionsBuses" label="Buses" />
                     </div>
                 </div>
-                <q-input v-model="fecha_departida" filled type="date" hint="Fecha para Partida" style="width: 300px" />
+                <q-input v-model="fecha_departida" filled type="date" hint="Fecha para Partida" style="width: 350px" />
                 
             </q-card-section>
             <q-separator />
             <q-card-actions align="right">
-                <q-btn flat label="Cerrar" color="primary" v-close-popup />
-                <q-btn flat label="Guardar 💾" color="primary" @click="generarTicketInfo()" />
+                <q-btn label="Cerrar" color="orange-10" v-close-popup />
+                <q-btn label="Guardar" color="green" @click="generarTicketInfo()" />
             </q-card-actions>
             </q-card>
         </q-dialog>
       
         <div class="container">
             <div class="btn-generar">
-                <q-btn color="primary" label="Generar Ticket" @click="generarTicket()" />
+                <q-btn color="green" label="Generar Ticket" @click="generarTicket()" />
             </div>
             <div class="container-info">
                 <div v-if="asientos.length" class="container-bus">
