@@ -113,21 +113,21 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "placa", label: "Placa", field: "placa", sortable: true },
-  { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, },
-  { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", },
-  { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", },
-  { name: "precio", label: "Ruta Precio", field: (row) => row.ruta_id.precio },
-  { name: "origen", label: "Ruta Origen", field: (row) => row.ruta_id.origen },
-  { name: "destino", label: "Ruta Destino", field: (row) => row.ruta_id.destino },
-  { name: "hora_partida", label: "Ruta Horario Partida", field: (row) => row.ruta_id.horario_id.hora_partida },
-  { name: "hora_llegada", label: "Ruta Horario Llegada", field: (row) => row.ruta_id.horario_id.hora_llegada },
-  { name: "estado", label: "Estado", field: "estado", sortable: true },
+  { name: "placa", label: "Placa", field: "placa", sortable: true, align:"center"},
+  { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true,align:"center" },
+  { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos",align:"center" },
+  { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada",align:"center" },
+  { name: "precio", label: "Ruta Precio", field: (row) => row.ruta_id.precio,align:"center" },
+  { name: "origen", label: "Ruta Origen", field: (row) => row.ruta_id.origen,align:"center" },
+  { name: "destino", label: "Ruta Destino", field: (row) => row.ruta_id.destino,align:"center" },
+  { name: "hora_partida", label: "Ruta Horario Partida", field: (row) => row.ruta_id.horario_id.hora_partida,align:"center" },
+  { name: "hora_llegada", label: "Ruta Horario Llegada", field: (row) => row.ruta_id.horario_id.hora_llegada,align:"center" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center"},
   {
-    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true,
+    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true,align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
-  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, },
+  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false,align:"center" },
 ];
 
 function agregarBus() {

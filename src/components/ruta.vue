@@ -102,28 +102,31 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "precio", label: "Precio", field: "precio", sortable: true },
+  { name: "precio", label: "Precio", field: "precio", sortable: true,align:"center" },
   {
     name: "hora_partida",
     label: "Hora Partida",
     field: (row) => row.horario_id.hora_partida,
+    align:"center"
   },
   {
     name: "hora_llegada",
     label: "Hora LLegada",
     field: (row) => row.horario_id.hora_llegada,
+    align:"center"
   },
-  { name: "origen", label: "Origen", field: "origen" },
-  { name: "destino", label: "Destino", field: "destino" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true },
+  { name: "origen", label: "Origen", field: "origen",align:"center"},
+  { name: "destino", label: "Destino", field: "destino",align:"center" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center" },
   {
     name: "createAT",
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
+    align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
-  { name: "opciones", label: "Opciones", sortable: false },
+  { name: "opciones", label: "Opciones", sortable: false,align:"center"},
 ];
 
 function agregarRuta() {

@@ -59,18 +59,18 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "vendedor_id", label: "Vendedor", field: (row) => row.vendedor_id.cedula },
-  { name: "cliente_id", label: "Cliente", field: (row) => row.cliente_id.cedula },
-  { name: "bus_id", label: "Bus", field: (row) => row.bus_id.placa },
+  { name: "vendedor_id", label: "Vendedor", field: "vendedor_id", sortable: true },
+  { name: "cliente_id", label: "Cliente", field: "cliente_id", sortable: true },
+  { name: "bus_id", label: "Bus", field: "bus_id" },
   { name: "no_asiento", label: "N° Asiento", field: "no_asiento" },
   { name: "fecha_departida", label: "Fecha Partida", field: "fecha_departida" },
   { name: "fechahora_venta", label: "Fecha Venta", field: "fechahora_venta" },
-  
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
+    align:"center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -78,6 +78,7 @@ const columns = [
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
+    align:"center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -85,6 +86,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
+    align:"center"
   },
 ];
 

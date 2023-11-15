@@ -1,55 +1,34 @@
 <template>
     <div class="container-all">
-      <!-- Modal -->
-        <q-dialog v-model="fixed">
-            <q-card class="modal-content">
-                <q-card-section color="orange-12" class="row items-center q-pb-none bg-orange-12" >
-                    <div class="text-h6">{{ text }}</div>
-                    <q-space />
-                    <q-btn icon="close" flat round dense v-close-popup />
-                </q-card-section>
-            <q-separator />
-            <q-card-section style="max-height: 50vh" class="scroll">
-                <div class="q-pa" style="width: 350px;">
-                    <div class="q-gutter">
-                        <q-select v-model="ruta" :options="optionsRutas" label="Rutas" />
+        <div class="q-pa-md example-row-equal-width">
+            <div class="row">
+                <div class="col">
+                    <div class="bnt-bc">
+                        <q-btn color="green" label="Generar Ticket" @click="mostrarModal"/>
+                    </div>
+                    <div v-if="showmodal" align="center">
+                        <q-select text-color="black" v-model="ruta" :options="optionsRutas" label="Rutas" style="width: 320px; margin-bottom:15px;" />
+                        <q-select v-model="bus" :options="optionsBuses" label="Buses" style="width: 320px; margin-bottom:15px;"/>
+                        <q-input v-model="fecha_departida" label="Fecha para Partida" filled type="date" style="width: 320px; margin-bottom:15px;" />
+                        <q-btn label="Cerrar" color="amber" padding="sm" @click="cerrarModal" />
+                        <q-btn label="Guardar" color="orange-10" padding="sm" @click="generarTicketInfo()" />
+                       </div>
+                    <div v-if="showClienteDiv" class="cliente" align="center">
+                        <q-btn  class="bnt-bc" color="green" label="Buscar Cliente" @click="buscarCliente()" />
+                        <q-input class="label" standout color="green"  v-model="cedula" label="Cedula" placeholder="Cedula del cliente" style="width: 300px" />
+                        <q-input class="label" standout v-model="nombre" label="Nombre" placeholder="Nombre del cliente" style="width: 300px" />
+                        <q-input class="label" standout v-model="telefono" label="Telefono" placeholder="Telefono del cliente"  style="width: 300px"/>
+                        <q-btn  class="btn-c" color="orange-10" label="Confirmar" @click="CrearTicket()" />
                     </div>
                 </div>
-                <div class="q-pa" style="width: 350px;">
-                    <div class="q-gutter">
-                        <q-select v-model="bus" :options="optionsBuses" label="Buses" />
+                <div class="col-6" align="center" style="margin-top: 60px;">
+                    <div v-if="asientos.length" class="row">
+                        <div v-for="i in asientos" :key="i" class="col-3" >
+                            <q-btn push padding="md" size="22px" :value="i" @click="no_asiento = i" :style="{ backgroundColor: no_asiento === i ? 'orange' : 'initial' }" >💺{{ i }}</q-btn>
+                        </div>
                     </div>
-                </div>
-                <q-input v-model="fecha_departida" filled type="date" hint="Fecha para Partida" style="width: 350px" />
-                
-            </q-card-section>
-            <q-separator />
-            <q-card-actions align="right">
-                <q-btn label="Cerrar" color="orange-10" v-close-popup />
-                <q-btn label="Guardar" color="green" @click="generarTicketInfo()" />
-            </q-card-actions>
-            </q-card>
-        </q-dialog>
-      
-        <div class="container">
-            <div class="btn-generar">
-                <q-btn color="green" label="Generar Ticket" @click="generarTicket()" />
-            </div>
-            <div class="container-info">
-                <div v-if="asientos.length" class="container-bus">
-                    <div v-for="i in asientos" :key="i" class="container-asientos">
-                        <button type="button" :value="i" @click="no_asiento = i" :style="{ backgroundColor: no_asiento === i ? 'red' : 'initial' }">{{ i }} 💺</button>
-                    </div>
-                </div>
-                <div v-if="showClienteDiv" class="cliente">
-                    <q-btn  class="bnt-bc" color="primary" label="Buscar Cliente" @click="buscarCliente()" />
-                    <q-input class="label" standout v-model="cedula" label="Cedula" placeholder="Cedula del cliente" style="width: 300px" />
-                    <q-input class="label" standout v-model="nombre" label="Nombre" placeholder="Nombre del cliente" style="width: 300px" />
-                    <q-input class="label" standout v-model="telefono" label="Telefono" placeholder="Telefono del cliente"  style="width: 300px"/>
-                    <q-btn  class="btn-c" color="primary" label="Generar Ticket" @click="CrearTicket()" />
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -77,9 +56,10 @@ let bus = ref("");
 let fecha_departida = ref("");
 let no_asiento = ref(0);
 let showClienteDiv = ref(false);
-let cedula =  ref('');
-let nombre =  ref('');
-let telefono =  ref('');
+let showmodal = ref(false);
+let cedula = ref('');
+let nombre = ref('');
+let telefono = ref('');
 let buses = ref([]);
 let rutas = ref([]);
 let clientes = ref([]);
@@ -88,6 +68,20 @@ let vendedor = ref([]);
 
 let optionsRutas = ref([]);
 let optionsBuses = ref([]);
+
+function mostrarModal() {
+    // Configurar la información necesaria antes de mostrar el modal
+    obtenerRutas();
+    fixed.value = true;
+    text.value = "Generar Ticket";
+    showmodal.value = true;
+}
+
+function cerrarModal() {
+    // Opcional: Restablecer los valores o realizar otras acciones al cerrar el modal
+    fixed.value = false;
+    showmodal.value = false;
+}
 
 async function obtenerInfo() {
     await busStore.obtenerInfoBuses();
@@ -101,25 +95,25 @@ async function obtenerInfo() {
 }
 
 async function obtenerRutas() {
-  try {
-    await rutaStore.obtenerInfoRutas();
+    try {
+        await rutaStore.obtenerInfoRutas();
         optionsRutas.value = rutaStore.rutas.map((ruta) => ({
             label: `${ruta.precio} - ${ruta.origen} - ${ruta.destino}`,
-             value: String(ruta._id),
+            value: String(ruta._id),
         }));
     } catch (error) {
         console.log(error);
     }
 }
-  
+
 async function obtenerBuses() {
     const busesFiltrados = buses.value.filter((bus) => bus.ruta_id._id === ruta._rawValue.value);
     optionsBuses.value = busesFiltrados.map((bus) => ({
-      label: `${bus.placa} - ${bus.empresa_asignada} - ${bus.numero_bus}`,
-      value: String(bus._id),
+        label: `${bus.placa} - ${bus.empresa_asignada} - ${bus.numero_bus}`,
+        value: String(bus._id),
     }));
 }
-  
+
 function generarListaAsientos() {
     const busSeleccionado = buses.value.find((b) => b._id === bus._rawValue.value);
     if (busSeleccionado) {
@@ -142,13 +136,14 @@ async function buscarCliente() {
         cliente_id.value = clienteEncontrado._id
     }
 }
-  
+
 async function generarTicket() {
     await obtenerRutas();
     fixed.value = true;
     text.value = "Generar Ticket";
+    showmodal.value = true; // Asegúrate de que showmodal se establezca en true aquí
 }
-  
+
 async function generarTicketInfo() {
     fixed.value = false;
     generarListaAsientos();
@@ -164,28 +159,28 @@ async function CrearTicket() {
         bus_id: bus._rawValue.value,
         no_asiento: no_asiento.value,
         fecha_departida: fecha_departida.value
-    }); 
+    });
 }
 
-async function obtenerVendedor(){
+async function obtenerVendedor() {
     vendedor.value = loginStore.vendedor;
 }
 
 let tickets = ref([])
 
 
-async function validarAsientos(){
+async function validarAsientos() {
     await ticketStore.getTickets();
     tickets.value = ticketStore.ticket
 
     const date = new Date(ticketStore.ticket.fecha_departida);
-    const formattedDate = date.toISOString().split('T')[0]; 
+    const formattedDate = date.toISOString().split('T')[0];
 
     fecha_departida.value = formattedDate;
-    const ticketFechaPartida = tickets.value.map((ticket)=> ticket.fecha_departida = fecha_departida.value)
+    const ticketFechaPartida = tickets.value.map((ticket) => ticket.fecha_departida = fecha_departida.value)
 
-    if (ticketVendedorId){
-        
+    if (ticketVendedorId) {
+
     }
 }
 
@@ -209,73 +204,22 @@ onMounted(async () => {
     padding: 0;
     width: 100%;
 }
-
-.container{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-.btn-generar{
-    width: 100%;
-    margin-top: 70px;
-    display: flex;
-    justify-content: center;
-    margin-right: 10px;
-}
-.container-info{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-}
-.container-bus {
-    height: 250px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    margin-top: 70px;
-  }
-  
-  .container-asientos {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    
-  }
-  
-  .container-asientos button {
-    width: 70px;
-    height: 70px;
-    margin: 5px;
-    font-size: 6mm;
-    border-radius: 5px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    border: solid rgb(0, 67, 252)
-  }
-  .cliente{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 80px;
-  }
   .cliente input{
-    margin: 4px;
+    margin-top: 8px;
   }
   .bnt-bc{
-    margin-bottom: 2px;
+    margin-top: 35px;
+    margin-bottom: 15px;
   }
   .btn-c{
-    margin-top: 2px;
+    margin-top: 6px;
   }
   .label{
-    background-color: rgba(100, 100, 100, 0.329);
+    background-color: rgba(250, 250, 249, 0.226);
     border-radius: 5px;
     border: solid gray 1px; 
-    margin: 1px;
+    margin: 8px;
   }
+
+
 </style>

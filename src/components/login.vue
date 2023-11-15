@@ -19,7 +19,7 @@
           <div class="error">{{errorMessage}}</div>
 
           <div class="text-center">
-              <q-btn type="submit" class="login-button">Ingresar</q-btn>
+              <q-btn color="amber" type="submit" class="login-button">Ingresar</q-btn>
           </div>
         </q-form>
       </q-card-section>
