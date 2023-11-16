@@ -70,6 +70,7 @@ let nombre = ref();
 let telefono = ref("");
 let cambio = ref(0);
 const $q = useQuasar()
+let validacion = ref(true);
 
 async function obtenerInfo() {
   try {
@@ -114,11 +115,15 @@ const columns = [
   },
 ];
 
-function agregarCliente() {
+async function agregarCliente() {
   fixed.value = true;
   text.value = "Agregar Cliente";
   cambio.value = 0;
   limpiar();
+  // Restablecer el mensaje de error al agregar
+  errorMessage.value = "";
+  // Restablecer la validación al agregar
+  validacion.value = true;
 }
 
 async function agregarEditarCliente() {
@@ -168,6 +173,10 @@ async function EditarCliente(id) {
     cedula.value = clienteSeleccionado.cedula;
     nombre.value = clienteSeleccionado.nombre;
     telefono.value = clienteSeleccionado.telefono;
+    // Restablecer el mensaje de error al editar
+    errorMessage.value = "";
+    // Restablecer la validación al editar
+    validacion.value = true;
   }
 }
 
