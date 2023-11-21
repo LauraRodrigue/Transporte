@@ -14,7 +14,7 @@
       <q-input v-model="nombre" label="Nombre" style="width: 380px" />
       <q-input v-model="telefono" label="Telefono" style="width: 380px" />
 
-      <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
+      <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
     </q-card-section>
 
 
@@ -197,14 +197,18 @@ async function validar() {
   errorMessage.value = "";
 
   if (!cedula.value && !nombre.value && !telefono.value) {
-    errorMessage.value = "Ingrese la cédula, el nombre y el teléfono";
+    errorMessage.value = "* Ingrese la cédula, el nombre y el teléfono";
   } else if (!cedula.value) {
-    errorMessage.value = "Ingrese la cédula";
+    errorMessage.value = "* Ingrese la cédula";
   } else if (!nombre.value) {
-    errorMessage.value = "Ingrese el nombre";
+    errorMessage.value = "* Ingrese el nombre";
   } else if (!telefono.value) {
-    errorMessage.value = "Ingrese el teléfono";
+    errorMessage.value = "* Ingrese el teléfono";
   }
+
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000);
 
   // Actualizar el estado de validación
   validacion.value = errorMessage.value === "";
