@@ -78,6 +78,7 @@ let nombre = ref();
 let bus = ref("")
 let experiencia = ref("");
 let telefono = ref("");
+
 let cambio = ref(0);
 
 // const cantidad_asientos = ref("");
@@ -115,9 +116,6 @@ onMounted(async () => {
 const columns= [ 
   { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align:"left" },
   { name: "nombre", label: "Nombre", field: "nombre",sortable: true , align:"left" },
-  { name: "id_bus", label: "Placa",  field: (row) => row.id_bus.placa,align:"center" },
-  { name: "id_bus", label: "Empresa Bus", field: (row) => row.id_bus.empresa_asignada,align:"center" },
-  { name: "id_bus", label: "Numero Bus", field: (row) => row.id_bus.numero_bus,align:"center" },
   { name: "experiencia", label: "Experiencia", field: "experiencia",align:"center" },
   { name: "telefono", label: "Telefono", field: "telefono",align:"center" },
   { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center" },

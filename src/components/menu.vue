@@ -10,6 +10,7 @@
                         </q-avatar>
                         Transporte S.A.S
                     </q-toolbar-title>
+                    <router-link to="/" class="opcioncont" style="font-size: 2em"><q-btn dense flat round label="salir" @click="cerrarsesion" ></q-btn></router-link>
                 </q-toolbar>
             </q-header>
 
@@ -74,6 +75,10 @@ export default {
             leftDrawerOpen,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value
+            },
+
+            cerrarsesion(){
+                localStorage.removeItem('token')
             }
         }
     }

@@ -58,6 +58,7 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { useHorarioStore } from '../stores/horario.js';
+import { useQuasar } from 'quasar'
 const HorarioStore = useHorarioStore()
 
 let horarios = ref([]);
@@ -67,6 +68,7 @@ let text = ref('')
 let hora_partida = ref('');
 let hora_llegada = ref();
 let cambio = ref(0)
+const $q = useQuasar()
 let validacion = ref(true);
 
 
@@ -136,8 +138,9 @@ async function agregarEditarHorario() {
       obtenerInfo();
       fixed.value = false;
     } catch (error) {
-      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
       console.error(error);
+      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
+      
     }
   }
 }

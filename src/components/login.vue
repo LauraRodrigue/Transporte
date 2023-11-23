@@ -4,7 +4,7 @@
 
     <q-card class="my-card bg-orange-2 text-black"  style="height: 430px; width: 350px;">
       <q-card-section class="column flex-center">
-        
+
         <q-avatar class="material-icons-outlined" size="100px" font-size="60px" color="orange-10" text-color="white" icon="🚍" >
 
       </q-avatar>
@@ -64,10 +64,12 @@ async function validar() {
     if (validacion.value==true) {
         try {
         showDefault()
-        await loginStore.Login({
+        const res = await loginStore.Login({
             cuenta: username.value,
             clave: password.value
         });
+        console.log(res);
+        localStorage.setItem('token', res.data.token)
         if(notification) {
             notification()
         }

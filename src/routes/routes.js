@@ -11,10 +11,37 @@ import vendedor from "../components/vendedor.vue";
 import home from "../components/home.vue";
 import ventas from "../components/venta.vue";
 
+function isAuthenticated() {
+  const token = localStorage.getItem("token");
+
+  console.log(token);
+
+  if (token) return true;
+  else return false;
+}
+
+const authGuard = (to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    console.log(isAuthenticated());
+    if (!isAuthenticated()) {
+      next({ path: "/" });
+      console.log("h");
+    } else {
+      next();
+      console.log("a");
+    }
+  } else {
+    next();
+    console.log("b");
+  }
+};
+
 const routes = [
   { path: "/", component: login },
   {
     path: "/menu",
+    meta: { requiresAuth: true },
+    beforeEnter: authGuard,
     component: menu,
     children: [
       { path: "", component: home },
