@@ -4,7 +4,7 @@
 
     <q-card class="my-card bg-orange-2 text-black"  style="height: 430px; width: 350px;">
       <q-card-section class="column flex-center">
-        <q-avatar class="material-icons-outlined" size="100px" font-size="52px" color="orange-10" text-color="white" icon="face" >
+        <q-avatar class="material-icons-outlined" size="100px" font-size="70px" color="orange-10" text-color="white" icon="👤" >
       </q-avatar>
       </q-card-section>
       <q-card-section>
