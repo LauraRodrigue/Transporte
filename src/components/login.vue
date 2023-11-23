@@ -4,17 +4,17 @@
 
     <q-card class="my-card bg-orange-2 text-black"  style="height: 430px; width: 350px;">
       <q-card-section class="column flex-center">
-        <q-avatar class="material-icons-outlined" size="100px" font-size="52px" color="orange-10" text-color="white" icon="face" >
+        <q-avatar class="material-icons-outlined" size="100px" font-size="60px" color="orange-10" text-color="white" icon="🚍" >
       </q-avatar>
       </q-card-section>
       <q-card-section>
        <q-form @submit.prevent="validar">
-          <q-input v-model="username" placeholder="Usuario" class="input-field" type="text"/>
-            <label for="input-field" class="input-label">Usuario</label>
+          <q-input v-model="username" placeholder="*Ingrese su usuario" class="input-field" type="text"/>
+            <label for="input-field" class="input-label " style="font-family:Georgia, 'Times New Roman', Times, serif; font-size: large; font-weight: 900;">Usuario</label>
             <span class="input-highlight"></span>
 
-          <q-input placeholder="Password" class="input-field"  v-model="password" name="password" type="password"/>
-            <label for="input-field" class="input-label">Password</label>
+          <q-input placeholder="*Ingrese su Contraseña" class="input-field"  v-model="password" name="password" type="password"/>
+            <label for="input-field" class="input-label" style="font-family:Georgia, 'Times New Roman', Times, serif; font-size: large; font-weight: 900;">Password</label>
 
           <div class="error">{{errorMessage}}</div>
 
