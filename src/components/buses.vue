@@ -10,7 +10,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh" @submit.prevent="validar">
           <q-input type="text" v-model="placa" label="Placa" style="width: 300px" />
           <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" />
           <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" />
@@ -20,10 +20,11 @@
               <q-select v-model="ruta" :options="options" label="Rutas" />
             </div>
           </div>
+          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
 
         <q-separator />
-        <div class="error">{{ errorMessage }}</div>
+  
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="editarAgregarBus()" />
@@ -198,7 +199,7 @@ async function editarAgregarBus() {
           $q.notify({
             spinner: false,
             message: `${error.response.data.error.errors[0].msg}`,
-            timeout: 2000,
+            timeout: 6000,
             type: "negative",
           });
         }
@@ -292,35 +293,34 @@ async function ActivarBus(id) {
 
 }
 
-let errorMessage = ref("");
+let errorMessage = ref(""); 
 
-const showDefault = () => {
-  notification = $q.notify({
-    spinner: true,
-    message: "Please wait...",
-    timeout: 0,
-  });
-};
-
-let validacion = ref(false);
-let notification = ref(null);
 async function validar() {
+  
+  errorMessage.value = "";
 
   if (!placa.value && !numero_bus.value && !cantidad_asientos.value && !empresa_asignada.value && !ruta.value) {
-    errorMessage.value = "Por favor rellene los campos";
+    errorMessage.value = "* Por favor rellene los campos";
   } else if (!placa.value) {
-    errorMessage.value = "Ingrese la Placa";
+    errorMessage.value = "* Ingrese la Placa";
   } else if (!numero_bus.value) {
-    errorMessage.value = "Ingrese el numero del bus";
+    errorMessage.value = "* Ingrese el numero del bus";
   } else if (!cantidad_asientos.value) {
-    errorMessage.value = "Ingrese la cantidad de asientos";
+    errorMessage.value = "* Ingrese la cantidad de asientos";
   } else if (!empresa_asignada.value) {
-    errorMessage.value = "Ingrese el nombre de la empresa"
+    errorMessage.value = "* Ingrese el nombre de la empresa"
   } else if (!ruta.value) {
-    errorMessage.value = "Seleccione una ruta"
-  } else {
-    errorMessage.value = "";
-    validacion.value = true;
+    errorMessage.value = "* Seleccione una ruta"
   }
+
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000);
+
+
+  validacion.value = errorMessage.value === "";
+
 }
+
+
 </script>

@@ -9,7 +9,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh" @submit.prevent="validar">
           <q-input v-model="hora_partida" label="Hora_partida" style="width: 380px;" />
           <q-input v-model="hora_llegada" label="Hora_llegada" style="width: 380px;" />
 
@@ -139,7 +139,7 @@ async function agregarEditarHorario() {
       fixed.value = false;
     } catch (error) {
       console.error(error);
-      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
+      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000});
       
     }
   }
@@ -177,25 +177,25 @@ async function ActivarHorario(id) {
   obtenerInfo();
 }
 
-let errorMessage = ref(""); // Nuevo estado para mensajes de error
+let errorMessage = ref(""); 
 
 async function validar() {
-  // Restablecer el mensaje de error antes de realizar la validación
+  
   errorMessage.value = "";
 
   if (!hora_partida.value && !hora_llegada.value) {
     errorMessage.value = "* Por favor rellene los campos";
   } else if (!hora_partida.value) {
-    errorMessage.value = "* Ingrese la hora de partida";
+    errorMessage.value = "* Ingrese la hora de partida en formato HH:mm:ss";
   } else if (!hora_llegada.value) {
-    errorMessage.value = "* Ingrese la hora de llegada";
+    errorMessage.value = "* Ingrese la hora de llegada en formato HH:mm:ss";
   }
 
   setTimeout(() => {
     errorMessage.value = '';
   }, 5000);
 
-  // Actualizar el estado de validación
+
   validacion.value = errorMessage.value === "";
 
 }

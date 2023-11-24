@@ -62,6 +62,11 @@ let tarjeta = ref([
         icono: "👮",
         link: "/vendedor"
     },
+    {
+        item: "Salir",
+        icono:"📤",
+        link: "/"
+    }
 ]);
 
 

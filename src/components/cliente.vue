@@ -27,7 +27,7 @@
       </q-card>
     </q-dialog>
     <div align="center">
-      <h3 align="center">Clientes</h3>
+      <h3 align="center" >Clientes</h3>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%; text-align: left;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
@@ -150,7 +150,7 @@ async function agregarEditarCliente() {
     obtenerInfo();
     fixed.value = false;
   } catch (error) {
-    $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
+    $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000});
     console.error(error);
   }
 }
@@ -190,27 +190,29 @@ async function ActivarCliente(id) {
   obtenerInfo();
 }
 
-let errorMessage = ref(""); // Nuevo estado para mensajes de error
+let errorMessage = ref(""); 
 
 async function validar() {
-  // Restablecer el mensaje de error antes de realizar la validación
+
   errorMessage.value = "";
 
   if (!cedula.value && !nombre.value && !telefono.value) {
-    errorMessage.value = "* Ingrese la cédula, el nombre y el teléfono";
+    errorMessage.value = "* Por favor rellene todos los campos";
   } else if (!cedula.value) {
     errorMessage.value = "* Ingrese la cédula";
   } else if (!nombre.value) {
     errorMessage.value = "* Ingrese el nombre";
   } else if (!telefono.value) {
     errorMessage.value = "* Ingrese el teléfono";
-  }
+  } else if (telefono.value.length !== 10) {
+    errorMessage.value = "* El telefono debe tener 10 Digitos";
+  } 
 
   setTimeout(() => {
     errorMessage.value = '';
   }, 5000);
 
-  // Actualizar el estado de validación
+
   validacion.value = errorMessage.value === "";
 
 }

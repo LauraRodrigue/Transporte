@@ -10,7 +10,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh" @submit.prevent="validar">
           <q-input type="text" v-model="cedula" label="Cedula" style="width: 300px" />
           <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" />
           <div class="q-pa" style="width: 300px;">
@@ -20,9 +20,11 @@
           </div>
           <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" />
           <q-input type="text" v-model="telefono" label="Telefono" style="width: 300px" />
+
+          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
         <q-separator />
-        <div class="error">{{ errorMessage }}</div>
+        
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="editarAgregarConductor()" />
@@ -78,7 +80,6 @@ let nombre = ref();
 let bus = ref("")
 let experiencia = ref("");
 let telefono = ref("");
-
 let cambio = ref(0);
 
 // const cantidad_asientos = ref("");
@@ -133,7 +134,7 @@ function agregarConductor() {
 
 async function editarAgregarConductor() {
   validar();
-  if (validacion.value === true) {
+  if (validacion.value) {
     if (cambio.value === 0) {
       try {
         showDefault();
@@ -197,7 +198,7 @@ async function editarAgregarConductor() {
           $q.notify({
             spinner: false,
             message: `${error.response.data.error.errors[0].msg}`,
-            timeout: 2000,
+            timeout: 6000,
             type: "negative",
           });
         }
@@ -285,8 +286,46 @@ async function ActivarConductor(id) {
   }
 }
 
+let errorMessage = ref(""); 
 
-let errorMessage = ref("");
+async function validar() {
+
+  errorMessage.value = "";
+
+  if (!cedula.value && !nombre.value && !bus.value && !experiencia.value && !telefono.value) {
+    errorMessage.value = "* Por favor Rellene todos los campos ";
+  } else if (!cedula.value) {
+    errorMessage.value = "* Ingrese la Cedula";
+  } else if (!nombre.value) {
+    errorMessage.value = "* Ingrese el Nombre";
+  } else if (!bus.value) {
+    errorMessage.value = "* Seleccione un Bus";
+  } else if (!experiencia.value) {
+    errorMessage.value = "* Digite la experiencia, por ejemplo (4 años)"
+  } else if (!telefono.value) {
+    errorMessage.value = "* Ingrese el Telefono";
+  } else if (telefono.value.length !== 10) {
+    errorMessage.value = "* El telefono debe tener 10 Digitos";
+  } 
+
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000);
+
+  validacion.value = errorMessage.value === "";
+
+}
+
+
+
+
+
+
+
+
+//codigo de validaciones guardar
+
+/*let errorMessage = ref("");
 
 const showDefault = () => {
   notification = $q.notify({
@@ -295,6 +334,9 @@ const showDefault = () => {
     timeout: 0,
   });
 };
+
+
+
 
 let validacion = ref(false);
 let notification = ref(null);
@@ -318,33 +360,10 @@ async function validar() {
     errorMessage.value = "";
     validacion.value = true;
   }
-}
+}*/
+
+
 </script>
   
-<style scoped>
-.modal-content {
-  width: 400px;
-}
-
-.botones button {
-  margin: 2px;
-}
 
 
-
-.btn-agregar {
-  width: 100%;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: flex-end
-}
-
-.volver {
-  width: 100%;
-  margin-top: 5px;
-}
-
-.jose{
-  text-align: left;
-}
-</style>

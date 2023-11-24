@@ -10,7 +10,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh" @submit.prevent="validar">
           <q-input  type="number"  v-model="precio"  label="Precio"  style="width: 300px"/>
           <div class="q-pa" style="width: 300px">
             <div class="q-gutter">
@@ -19,9 +19,10 @@
           </div>
           <q-input  type="text"  v-model="origen"  label="Origen"  style="width: 300px"/>
           <q-input  type="text"  v-model="destino"  label="Destino"  style="width: 300px"/>
+
+          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
         <q-separator />
-        <div class="error">{{errorMessage}}</div>
 
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
@@ -87,7 +88,7 @@ async function obtenerInfo() {
 
 async function obtenerHorarios() {
   try {
-    await horarioStore.obtenerInfoHorarios();
+    await horarioStore.getHorario();
     options.value = horarioStore.horarios.map((horario) => ({
       label: `${horario.hora_partida} - ${horario.hora_llegada}`,
       value: String(horario._id),
@@ -96,6 +97,7 @@ async function obtenerHorarios() {
     console.log(error);
   }
 }
+
 
 onMounted(async () => {
   obtenerInfo();
@@ -138,7 +140,7 @@ function agregarRuta() {
 
 async function editarAgregarRuta() {
   validar();
-  if (validacion.value === true) {
+  if (validacion.value) {
     if (cambio.value === 0) {
       try {
         showDefault();
@@ -200,7 +202,7 @@ async function editarAgregarRuta() {
           $q.notify({
             spinner: false,
             message: `${error.response.data.error.errors[0].msg}`,
-            timeout: 2000,
+            timeout: 6000,
             type: "negative",
           });
         }
@@ -291,42 +293,31 @@ async function ActivarRuta(id) {
   }
 }
 
-let errorMessage = ref("");
+let errorMessage = ref(""); 
 
-const showDefault = () => {
-  notification = $q.notify({
-    spinner: true,
-    message: "Please wait...",
-    timeout: 0,
-  });
-};
-
-let validacion = ref(false);
-let notification = ref(null);
 async function validar() {
+
+  errorMessage.value = "";
+
   if (!precio.value && !horario.value && !origen.value && !destino.value) {
-    errorMessage.value = "Por favor rellene los campos";
+    errorMessage.value = "* Por favor rellene los campos";
   } else if (!precio.value) {
-    errorMessage.value = "Ingrese el Precio";
+    errorMessage.value = "* Ingrese el Precio";
   } else if (!horario.value) {
-    errorMessage.value = "Eliga un Horario";
+    errorMessage.value = "* Eliga un Horario";
   } else if (!origen.value) {
-    errorMessage.value = "Digite el Origen";
+    errorMessage.value = "* Digite el Origen";
   }else if(!destino.value){
-    errorMessage.value = "Digite el Destino"
-  } else {
-    errorMessage.value = "";
-    validacion.value = true;
+    errorMessage.value = "* Digite el Destino"
   }
+
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000);
+
+  validacion.value = errorMessage.value === "";
+
 }
+
+
 </script>
-
-<style scoped>
-.q-table-container .q-td.opciones {
-  text-align: center;
-}
-
-.q-btn.opcion-btn {
-  margin-right: 5px;
-}
-</style>

@@ -9,12 +9,14 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh;" class="scroll">
+        <q-card-section style="max-height: 50vh;" @submit.prevent="validar">
           <q-input v-model="cedula" label="Cédula" style="width: 400px" />
           <q-input v-model="nombre" label="Nombre" style="width: 400px" />
           <q-input v-model="cuenta" label="Cuenta" style="width: 400px" />
           <q-input v-model="clave" label="Clave" style="width: 400px" />
           <q-input v-model="telefono" label="Telefono" style="width: 400px" />
+
+          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
 
 
@@ -72,6 +74,7 @@ let clave = ref("");
 let telefono = ref("");
 let cambio = ref(0);
 const $q = useQuasar()
+let validacion = ref(true);
 
 async function obtenerInfo() {
   try {
@@ -88,17 +91,17 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true,align:"center" },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true,align:"center" },
-  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true,align:"center" },
-  { name: "clave", label: "Clave", field: "clave", sortable: true,align:"center"},
-  { name: "telefono", label: "Telefono", field: "telefono",align:"center"},
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "center" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "center" },
+  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true, align: "center" },
+  { name: "clave", label: "Clave", field: "clave", sortable: true, align: "center" },
+  { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
   {
     name: "estado",
     label: "Estado",
     field: "estado",
     sortable: true,
-    align:"center",
+    align: "center",
     format: (val) => (val ? "Activo" : "Inactivo"),
   },
   {
@@ -106,7 +109,7 @@ const columns = [
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
-    align:"center",
+    align: "center",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   {
@@ -114,7 +117,7 @@ const columns = [
     label: "Opciones",
     field: (row) => null,
     sortable: false,
-    align:"center"
+    align: "center"
   },
 ];
 
@@ -126,33 +129,36 @@ function agregarVendedor() {
 }
 
 async function agregarEditarVendedor() {
+  validar();
+  if (validacion.value) {
   try {
-    if (cambio.value === 0) {
-      await VendedorStore.postVendedor({
-        cedula: cedula.value,
-        nombre: nombre.value,
-        cuenta: cuenta.value,
-        clave: clave.value,
-        telefono: telefono.value,
-      });
-    } else {
-      let id = idVendedor.value;
-      if (id) {
-        await VendedorStore.putVendedor(id, {
+      if (cambio.value === 0) {
+        await VendedorStore.postVendedor({
           cedula: cedula.value,
           nombre: nombre.value,
           cuenta: cuenta.value,
           clave: clave.value,
           telefono: telefono.value,
         });
+      } else {
+        let id = idVendedor.value;
+        if (id) {
+          await VendedorStore.putVendedor(id, {
+            cedula: cedula.value,
+            nombre: nombre.value,
+            cuenta: cuenta.value,
+            clave: clave.value,
+            telefono: telefono.value,
+          });
+        }
       }
+      limpiar();
+      obtenerInfo();
+      fixed.value = false;
+    } catch (error) {
+      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000 });
+      console.error(error);
     }
-    limpiar();
-    obtenerInfo();
-    fixed.value = false;
-  } catch (error) {
-    $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg });
-    console.error(error);
   }
 }
 
@@ -189,5 +195,37 @@ async function ActivarVendedor(id) {
   await VendedorStore.putVendedorActivar(id);
   obtenerInfo();
 }
+
+let errorMessage = ref(""); 
+
+async function validar() {
+
+  errorMessage.value = "";
+
+  if (!cedula.value && !nombre.value && !cuenta.value && clave.value && !telefono.value) {
+    errorMessage.value = "* Por favor rellene todos los campos";
+  } else if (!cedula.value) {
+    errorMessage.value = "* Ingrese la cédula";
+  } else if (!nombre.value) {
+    errorMessage.value = "* Ingrese el nombre";
+  }  else if (!cuenta.value) {
+    errorMessage.value = "* Ingrese un nombre para su usuario";
+  }  else if (!clave.value) {
+    errorMessage.value = "* Ingrese una contraseña con números, mayusculas y minusculas";
+  } else if (!telefono.value) {
+    errorMessage.value = "* Ingrese el teléfono";
+  } else if (telefono.value.length !== 10) {
+    errorMessage.value = "* El telefono debe tener 10 Digitos";
+  } 
+
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000);
+
+
+  validacion.value = errorMessage.value === "";
+
+}
+
 </script>
   

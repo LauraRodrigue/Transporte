@@ -18,7 +18,7 @@
           <q-input placeholder="*Ingrese su Contraseña" class="input-field"  v-model="password" name="password" type="password"/>
             <label for="input-field" class="input-label" style="font-family:Georgia, 'Times New Roman', Times, serif; font-size: large; font-weight: 900;">Password</label>
 
-          <div class="error">{{errorMessage}}</div>
+            <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
 
           <div class="text-center">
               <q-btn color="amber" type="submit" class="login-button">Ingresar</q-btn>
@@ -52,11 +52,11 @@ let validacion = ref(false);
 let notification = ref(null);
 async function validar() {
     if (!username.value && !password.value) {
-        errorMessage.value = "Ingrese el usuario y la contraseña"
+        errorMessage.value = "* Ingrese el usuario y la contraseña"
     }else if(!username.value){
-        errorMessage.value = "Ingrese el usuario"
+        errorMessage.value = "* Ingrese el usuario"
     }else if(!password.value){
-        errorMessage.value = "Ingrese la contraseña"
+        errorMessage.value = "* Ingrese la contraseña"
     }else{
         errorMessage.value =""
         validacion.value = true;

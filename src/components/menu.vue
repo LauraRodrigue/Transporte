@@ -10,7 +10,7 @@
                         </q-avatar>
                         Transporte S.A.S
                     </q-toolbar-title>
-                    <router-link to="/" class="opcioncont" style="font-size: 2em"><q-btn dense flat round label="salir" @click="cerrarsesion" ></q-btn></router-link>
+                    <router-link to="/" class="opcioncont"  style="font-size: 2em;"><q-btn dense flat round icon="📤" size="0.8em" @click="cerrarsesion" ></q-btn></router-link>
                 </q-toolbar>
             </q-header>
 
@@ -25,6 +25,9 @@
                 </div>
                 <router-link to="/home" class="opcioncont" style="font-size: 2em">
                     <q-btn no-caps align="aroun" color="orange-12" text-color="black" icon="🏠" label="Menú" style="width: 95%" />
+                </router-link>
+                <router-link to="/" class="opcioncont" style="font-size: 2em">
+                    <q-btn no-caps align="aroun" color="orange-12" text-color="black" icon="📤" label="Cerrar Sección" style="width: 95%" />
                 </router-link>
                 <q-linear-progress :value="progress" class="q-mt-md" color="primary" style="margin-bottom: 2em" />
                 <router-link to="/conductor" class="opcioncont" style="font-size: 2em">
