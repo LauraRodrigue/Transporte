@@ -16,6 +16,7 @@
             <q-btn color="amber" @click="ActivarTicket(props.row._id)" v-else><q-icon
                 name="⭕" /></q-btn>
           </q-td>
+          <q-btn class="btnEditar" color="white" text-color="black" label="📄" @click="generarPDF(props.row)" />
         </template>
       </q-table>
     </div>
@@ -28,6 +29,7 @@ import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useTicketStore } from "../stores/boleto.js";
 import { useQuasar } from 'quasar'
+import { jsPDF } from "jspdf";
 const TicketStore = useTicketStore();
 
 let tickets = ref([]);
@@ -101,5 +103,23 @@ async function ActivarTicket(id) {
   obtenerInfo();
 }
 
+
+function generarPDF(ticket) {
+ 
+ const doc = new jsPDF();
+
+ doc.text(`Información del Ticket`, 20, 10);
+ doc.text(`Cliente: ${ticket.cliente_id.nombre} - ${ticket.cliente_id.cedula} - ${ticket.cliente_id.telefono}`, 20, 20);
+ doc.text(`Vendedor: ${ticket.vendedor_id.nombre} - ${ticket.vendedor_id.telefono}`, 20, 30);
+ doc.text(`Bus: ${ticket.bus_id.empresa_asignada} - ${ticket.bus_id.placa} - N°${ticket.bus_id.numero_bus}`, 20, 40);
+ doc.text(`Ruta: ${ticket.ruta_id.origen} - ${ticket.ruta_id.destino}`, 20, 50);
+ doc.text(`Horario: ${ticket.ruta_id.horario_id.hora_partida} - ${ticket.ruta_id.horario_id.hora_llegada}`, 20, 60);
+ doc.text(`N° Asiento: ${ticket.no_asiento}`, 20, 70);
+ doc.text(`Fecha de Partida: ${format(new Date(ticket.fecha_departida), "yyyy-MM-dd")}`, 20, 80);
+
+
+ doc.save(`ticket_${ticket._id}.pdf`);
+ 
+}
 
 </script>
