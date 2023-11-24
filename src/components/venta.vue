@@ -181,34 +181,35 @@
   
   // Crear Ticket
   async function CrearTicket() {
-    if (validacionCliente.value == true) {
-      try {
-        showDefault();
-        await ticketStore.postTicket({
-          vendedor_id: String(vendedor.value._id),
-          cliente_id: cliente_id.value,
-          ruta_id: ruta.value,
-          bus_id: bus.value,
-          no_asiento: no_asiento.value,
-          fecha_departida: fecha_departida.value,
-        });
-        cancelShow();
-        greatMessage.value = "Ticket Agregado";
-        showGreat();
-        showmodal.value = false;
-        asientos.value = [];
-        showClienteDiv.value = false;
-      } catch (error) {
-        cancelShow();
-        badMessage.value = error.response.data.error.errors[0].msg;
-        showBad();
-      }
-        } else {
-        cancelShow();
-        badMessage.value = "Selecciona un asiento y agrega un cliente";
-        showBad();
-    }
-  }
+  if (validacionCliente.value == true) {
+    try {
+      showDefault();
+      await ticketStore.postTicket({
+        vendedor_id: String(vendedor.value._id),
+        cliente_id: cliente_id.value,
+        ruta_id: ruta._rawValue.value,
+        bus_id: bus._rawValue.value,
+        no_asiento: no_asiento.value,
+        fecha_departida: fecha_departida.value,
+      });
+      cancelShow();
+      greatMessage.value = "Ticket Agregado";
+      showGreat();
+      fixed.value = false;
+      showmodal.value = false;
+      asientos.value = [];
+      showClienteDiv = false;
+    } catch (error) {
+      cancelShow();
+      badMessage.value = error.response.data.error.errors[0].msg;
+      showBad();
+    };
+  } else {
+    cancelShow();
+    badMessage.value = "Agrega un Cliente"
+    showBad();
+  };
+};
   
   // Obtener Vendedor
   async function obtenerVendedor() {
