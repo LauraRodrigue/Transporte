@@ -136,16 +136,20 @@
   
   // Generar listado de Asientos disponibles
   async function generarListaAsientos() {
-    await validarAsientos();
-    if (validacion.value) {
-      const busSeleccionado = buses.value.find((b) => b._id === bus.value);
-      if (busSeleccionado) {
-        const numeroAsientos = busSeleccionado.cantidad_asientos;
-        const listaAsientos = Array.from({ length: numeroAsientos }, (_, index) => index + 1);
-        asientos.value = listaAsientos;
-      }
-    }
-  }
+  await validarAsientos();
+  if (validacion.value) {
+    const busSeleccionado = buses.value.find((b) => b._id === bus._rawValue.value);
+    if (busSeleccionado) {
+      const numeroAsientos = busSeleccionado.cantidad_asientos;
+      const listaAsientos = [];
+      for (let i = 1; i <= numeroAsientos; i++) {
+        listaAsientos.push(Number(i));
+      };
+      asientos.value = listaAsientos;
+    };
+  };
+};
+
   
   let cliente_id = ref("");
   let validacionCliente = ref(null);
