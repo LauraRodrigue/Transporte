@@ -43,11 +43,11 @@
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
             <q-btn color="orange-14" style="margin-right: 5px" @click="EditarVendedor(props.row._id)"><q-icon
-                name="edit" /></q-btn>
+                name="🖋️" /></q-btn>
             <q-btn color="amber" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="cancel" /></q-btn>
+                name="❌" /></q-btn>
             <q-btn color="amber" @click="ActivarVendedor(props.row._id)" v-else><q-icon
-                name="check_circle_outline" /></q-btn>
+                name="⭕" /></q-btn>
           </q-td>
         </template>
       </q-table>

@@ -45,10 +45,10 @@
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="orange-14" text-color="white" icon="edit" @click="EditarBus(props.row._id)" />
-            <q-btn color="amber" text-color="white" icon="cancel" @click="InactivarBus(props.row._id)"
+            <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarBus(props.row._id)" />
+            <q-btn color="amber" text-color="white" icon="❌" @click="InactivarBus(props.row._id)"
               v-if="props.row.estado == 1" />
-            <q-btn color="amber" text-color="white" icon="check_circle_outline" @click="ActivarBus(props.row._id)"
+            <q-btn color="amber" text-color="white" icon="⭕" @click="ActivarBus(props.row._id)"
               v-else />
           </q-td>
         </template>

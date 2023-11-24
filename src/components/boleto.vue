@@ -12,9 +12,9 @@
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
             <q-btn color="amber" @click="InactivarTicket(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="cancel" /></q-btn>
+                name="❌" /></q-btn>
             <q-btn color="amber" @click="ActivarTicket(props.row._id)" v-else><q-icon
-                name="check_circle_outline" /></q-btn>
+                name="⭕" /></q-btn>
           </q-td>
         </template>
       </q-table>

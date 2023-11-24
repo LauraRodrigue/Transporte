@@ -44,9 +44,9 @@
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn  color="orange-14"  text-color="white"  icon="edit"  @click="EditarRuta(props.row._id)"/>
-            <q-btn  color="amber"  text-color="white"  icon="cancel"  @click="InactivarRuta(props.row._id)"  v-if="props.row.estado == 1"/>
-            <q-btn  color="amber"  text-color="white"  icon="check_circle_outline"  @click="ActivarRuta(props.row._id)"  v-else/>
+            <q-btn  color="orange-14"  text-color="white"  icon="🖋️"  @click="EditarRuta(props.row._id)"/>
+            <q-btn  color="amber"  text-color="white"  icon="❌"  @click="InactivarRuta(props.row._id)"  v-if="props.row.estado == 1"/>
+            <q-btn  color="amber"  text-color="white"  icon="⭕"  @click="ActivarRuta(props.row._id)"  v-else/>
           </q-td>
         </template>
       </q-table>

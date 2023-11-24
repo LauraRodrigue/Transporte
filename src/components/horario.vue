@@ -40,11 +40,11 @@
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
             <q-btn color="orange-14" style="margin-right: 5px;" text-color="white"
-              @click="EditarHorario(props.row._id)"><q-icon name="edit" /></q-btn>
+              @click="EditarHorario(props.row._id)"><q-icon name="🖋️" /></q-btn>
             <q-btn color="amber" @click="InactivarHorario(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="cancel" />
+                name="❌" />
             </q-btn>
-            <q-btn color="amber" @click="ActivarHorario(props.row._id)" v-else><q-icon name="check_circle_outline" />
+            <q-btn color="amber" @click="ActivarHorario(props.row._id)" v-else><q-icon name="⭕" />
             </q-btn>
           </q-td>
         </template>
