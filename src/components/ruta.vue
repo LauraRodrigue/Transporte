@@ -46,7 +46,7 @@
           <q-td :props="props" class="botones">
             <q-btn  color="orange-14"  text-color="white"  icon="🖋️"  @click="EditarRuta(props.row._id)"/>
             <q-btn  color="amber"  text-color="white"  icon="❌"  @click="InactivarRuta(props.row._id)"  v-if="props.row.estado == 1"/>
-            <q-btn  color="amber"  text-color="white"  icon="⭕"  @click="ActivarRuta(props.row._id)"  v-else/>
+            <q-btn  color="amber"  text-color="white"  icon="✔️"  @click="ActivarRuta(props.row._id)"  v-else/>
           </q-td>
         </template>
       </q-table>
@@ -80,7 +80,7 @@ async function obtenerInfo() {
   try {
     await rutaStore.obtenerInfoRutas();
     rutas.value = rutaStore.rutas;
-    rows.value = rutaStore.rutas;
+    rows.value = rutaStore.rutas.reverse();
   } catch (error) {
     console.log(error);
   }
@@ -239,59 +239,41 @@ async function EditarRuta(id) {
   }
 }
 
+
 async function InactivarRuta(id) {
-  try{        
-    showDefault();
+  try {
     await rutaStore.putInactivarRuta(id);
-    if(notification){ 
-      notification();
-    }
+    obtenerInfo();
+
     $q.notify({
-        spinner: false, 
-        message: "Ruta Inactivada", 
-        timeout: 2000,
-        type: 'positive',
-    }); 
-    obtenerInfo()
-  }catch (error) {
-    if(notification) {
-      notification()
-    };
-    $q.notify({
-        spinner: false, 
-        message: `${error.response.data.error.errors[0].msg}`, 
-        timeout: 2000,
-        type: 'negative',
+      spinner: false,
+      message: "Ruta Inactivada exitosamente.",
+      timeout: 2000,
+      type: 'negative',
     });
+  } catch (error) {
+    handleError(error);
   }
 }
 
 async function ActivarRuta(id) {
-  try{        
-        showDefault()
-        await rutaStore.putActivarRuta(id);
-        if(notification) 
-            notification()
-        
-        $q.notify({
-            spinner: false, 
-            message: "Ruta Activada", 
-            timeout: 2000,
-            type: 'positive',
-        }); 
-        obtenerInfo()
-    }catch (error) {
-        if(notification) {
-            notification()
-        };
-        $q.notify({
-            spinner: false, 
-            message: `${error.response.data.error.errors[0].msg}`, 
-            timeout: 2000,
-            type: 'negative',
-        });
+  try {
+    await rutaStore.putActivarRuta(id);
+    obtenerInfo();
+
+    $q.notify({
+      spinner: false,
+      message: "Ruta Activada exitosamente.",
+      timeout: 2000,
+      type: 'positive',
+    });
+  } catch (error) {
+    handleError(error);
   }
 }
+
+
+
 
 let errorMessage = ref(""); 
 

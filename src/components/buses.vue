@@ -15,9 +15,9 @@
           <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" />
           <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" />
           <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px" />
+          <q-input type="text" v-model="conductor_id" label="ID del Conductor" style="width: 300px" />
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
-              <q-select v-model="ruta" :options="options" label="Rutas" />
             </div>
           </div>
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
@@ -48,7 +48,7 @@
             <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarBus(props.row._id)" />
             <q-btn color="amber" text-color="white" icon="❌" @click="InactivarBus(props.row._id)"
               v-if="props.row.estado == 1" />
-            <q-btn color="amber" text-color="white" icon="⭕" @click="ActivarBus(props.row._id)"
+            <q-btn color="amber" text-color="white" icon="✔️" @click="ActivarBus(props.row._id)"
               v-else />
           </q-td>
         </template>
@@ -58,52 +58,34 @@
 </template>
  
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useBusStore } from "../stores/buses.js";
-import { useRutaStore } from "../stores/ruta.js";
+import { useConductorStore } from "../stores/conductor.js";
 import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 const busStore = useBusStore();
-const rutaStore = useRutaStore()
+const conductorStore = useConductorStore();
+const notification = $q.notify;
+
 
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
 let text = ref("");
-let ruta = ref("")
-let options = ref([])
 let placa = ref("");
 let numero_bus = ref();
 let cantidad_asientos = ref("");
 let empresa_asignada = ref("");
-// const cantidad_asientos = ref("");
-// const empresa_asignada = ref("");
+let conductor_id = ref(""); 
 let cambio = ref(0);
 
 async function obtenerInfo() {
   try {
     await busStore.obtenerInfoBuses();
     buses.value = busStore.buses;
-    rows.value = busStore.buses;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// watch(ruta, (newValue, oldValue) => {
-//   console.log(ruta._rawValue.value);
-// });
-
-async function obtenerRutas() {
-  try {
-    await rutaStore.obtenerInfoRutas();
-    options.value = rutaStore.rutas.map((ruta) => (
-      {
-        label: `${ruta.precio} - ${ruta.origen} - ${ruta.destino}`,
-        value: String(ruta._id)
-      }));
+    rows.value = busStore.buses.reverse();
   } catch (error) {
     console.log(error);
   }
@@ -127,10 +109,11 @@ const columns = [
 ];
 
 function agregarBus() {
-  obtenerRutas()
   fixed.value = true;
   text.value = "Agregar Bus";
   cambio.value = 0;
+  limpiar();
+  errorMessage.value = "";
 }
 
 async function editarAgregarBus() {
@@ -139,12 +122,16 @@ async function editarAgregarBus() {
     if (cambio.value === 0) {
       try {
         showDefault();
+        // Utiliza el store de conductores para obtener información del conductor
+        const conductor = await conductorStore.obtenerConductorPorId(conductor_id.value);
+        if (!conductor) {
+          throw new Error("Conductor no encontrado");
+        }
         await busStore.postBus({
           placa: placa.value,
           numero_bus: numero_bus.value,
           cantidad_asientos: cantidad_asientos.value,
           empresa_asignada: empresa_asignada.value,
-          ruta_id: ruta._rawValue.value,
         });
         if (notification) {
           notification();
@@ -178,12 +165,11 @@ async function editarAgregarBus() {
             numero_bus: numero_bus.value,
             cantidad_asientos: cantidad_asientos.value,
             empresa_asignada: empresa_asignada.value,
-            ruta_id: ruta._rawValue.value,
+            conductor_id: conductor_id.value,
           });
           if (notification) {
             notification();
           }
-          limpiar();
           $q.notify({
             spinner: false,
             message: "Bus Actualizado",
@@ -203,7 +189,6 @@ async function editarAgregarBus() {
             type: "negative",
           });
         }
-
       }
     }
   }
@@ -214,12 +199,14 @@ function limpiar() {
   numero_bus.value = "";
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
-  ruta.value = ""
 }
 
 let idBus = ref("");
+
+
+
+
 async function EditarBus(id) {
-  obtenerRutas()
   cambio.value = 1;
   const busSeleccionado = buses.value.find((bus) => bus._id === id);
   if (busSeleccionado) {
@@ -230,76 +217,70 @@ async function EditarBus(id) {
     numero_bus.value = busSeleccionado.numero_bus;
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
-    ruta.value = {
-      label: `${busSeleccionado.ruta_id.origen} - ${busSeleccionado.ruta_id.destino}`,
-      value: String(busSeleccionado.ruta_id._id)
+
+    // Asegúrate de que el conductor_id sea un String con el ID del conductor
+    conductor_id.value = String(busSeleccionado.conductor_id);
+
+    // Obtén información adicional del conductor
+    try {
+      const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value}`);
+      const conductor = responseConductor.data.conductor;
+
+      if (conductor) {
+        // Actualiza los datos del conductor en el modal
+        // Ajusta esto según la estructura de tu modelo de conductor
+        conductor_id.label = `${conductor.nombre} ${conductor.apellido}`;
+      } else {
+        throw new Error("Conductor no encontrado");
+      }
+    } catch (error) {
+      console.error(error);
+      // Maneja el error al obtener información del conductor
+      // Puedes mostrar un mensaje o realizar acciones específicas según tus necesidades
     }
   }
 }
 
+
+
 async function InactivarBus(id) {
   try {
-    showDefault();
     await busStore.putInactivarBus(id);
-    if (notification) {
-      notification();
-    }
+    obtenerInfo();
     $q.notify({
       spinner: false,
-      message: "Bus Inactivado",
-      timeout: 2000,
-      type: 'positive',
-    });
-    obtenerInfo()
-  } catch (error) {
-    if (notification) {
-      notification()
-    };
-    $q.notify({
-      spinner: false,
-      message: `${error.response.data.error.errors[0].msg}`,
+      message: "Bus Inactivado exitosamente.",
       timeout: 2000,
       type: 'negative',
     });
+  } catch (error) {
+    handleError(error);
   }
 }
 
 async function ActivarBus(id) {
   try {
-    showDefault();
     await busStore.putActivarBus(id);
-    if (notification) {
-      notification();
-    }
+    obtenerInfo();
     $q.notify({
       spinner: false,
-      message: "Bus Activado",
+      message: "Bus Activado exitosamente.",
       timeout: 2000,
       type: 'positive',
     });
-    obtenerInfo()
   } catch (error) {
-    if (notification) {
-      notification()
-    };
-    $q.notify({
-      spinner: false,
-      message: `${error.response.data.error.errors[0].msg}`,
-      timeout: 2000,
-      type: 'negative',
-    });
+    handleError(error);
   }
-
-
 }
+
+let validacion = ref(true);
+
 
 let errorMessage = ref(""); 
 
 async function validar() {
-  
   errorMessage.value = "";
-
-  if (!placa.value && !numero_bus.value && !cantidad_asientos.value && !empresa_asignada.value && !ruta.value) {
+  if (!placa.value && !numero_bus.value && !cantidad_asientos.value && !empresa_asignada.value) {
     errorMessage.value = "* Por favor rellene los campos";
   } else if (!placa.value) {
     errorMessage.value = "* Ingrese la Placa";
@@ -309,18 +290,9 @@ async function validar() {
     errorMessage.value = "* Ingrese la cantidad de asientos";
   } else if (!empresa_asignada.value) {
     errorMessage.value = "* Ingrese el nombre de la empresa"
-  } else if (!ruta.value) {
-    errorMessage.value = "* Seleccione una ruta"
   }
-
   setTimeout(() => {
     errorMessage.value = '';
   }, 5000);
-
-
-  validacion.value = errorMessage.value === "";
-
 }
-
-
 </script>

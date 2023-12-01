@@ -41,7 +41,7 @@ export const useHorarioStore = defineStore('horario', () => {
     }
     const putHorarioActivar = async (id)=>{
         try {
-            let res = await axios.put(`bus/activarHorario/${id}`)
+            let res = await axios.put(`horario/activarHorario/${id}`)
             return res
         } catch (error) {
             console.log(error, "Error al cambiar el estado del horario");

@@ -80,7 +80,7 @@ async function obtenerInfo() {
   try {
     await VendedorStore.getVendedor();
     vendedores.value = VendedorStore.vendedores;
-    rows.value = VendedorStore.vendedores;
+    rows.value = VendedorStore.vendedores.reverse();
   } catch (error) {
     console.log(error);
   }

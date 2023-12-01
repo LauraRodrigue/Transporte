@@ -111,7 +111,7 @@ async function obtenerInfo() {
   try {
     await ticketStore.getTickets();
     tickets.value = ticketStore.ticket;
-    rows.value = ticketStore.ticket;
+    rows.value = ticketStore.ticket.reverse();
   } catch (error) {
     console.log(error);
   };

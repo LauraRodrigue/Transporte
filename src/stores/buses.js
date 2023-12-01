@@ -14,6 +14,8 @@ export const useBusStore = defineStore('bus', () => {
         }
     };
 
+    
+
     const postBus = async (data) =>{
         try {
             let res = await axios.post("bus/bus/agregar", data);

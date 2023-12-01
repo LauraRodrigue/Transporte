@@ -15,7 +15,6 @@
           <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" />
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
-              <q-select v-model="bus" :options="options" label="ID Bus" />
             </div>
           </div>
           <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" />
@@ -48,7 +47,7 @@
             <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarConductor(props.row._id)" />
             <q-btn color="amber" text-color="white" icon="❌" @click="InactivarConductor(props.row._id)"
               v-if="props.row.estado == 1" />
-            <q-btn color="amber" text-color="white" icon="⭕" @click="ActivarConductor(props.row._id)"
+            <q-btn color="amber" text-color="white" icon="✔️" @click="ActivarConductor(props.row._id)"
               v-else />
           </q-td>
         </template>
@@ -89,7 +88,7 @@ async function obtenerInfo() {
   try {
     await conductorStore.obtenerInfoConductores();
     conductores.value = conductorStore.conductores;
-    rows.value = conductorStore.conductores;
+    rows.value = conductorStore.conductores.reverse();
   } catch (error) {
     console.log(error);
   }
@@ -226,7 +225,6 @@ async function EditarConductor(id) {
     text.value = "Editar Conductor";
     cedula.value = conductorSeleccionado.cedula;
     nombre.value = conductorSeleccionado.nombre;
-    bus.value = `${conductorSeleccionado.id_bus.placa} - ${conductorSeleccionado.id_bus.empresa_asignada} - ${conductorSeleccionado.id_bus.numero_bus}`
     experiencia.value = conductorSeleccionado.experiencia;
     telefono.value = conductorSeleccionado.telefono;
   }
@@ -234,57 +232,37 @@ async function EditarConductor(id) {
 
 async function InactivarConductor(id) {
   try {
-    showDefault();
     await conductorStore.putInactivarConductor(id);
-    if (notification) {
-      notification();
-    }
+    obtenerInfo();
+
     $q.notify({
       spinner: false,
-      message: "Conductor Inactivado",
-      timeout: 2000,
-      type: 'positive',
-    });
-    obtenerInfo()
-  } catch (error) {
-    if (notification) {
-      notification()
-    };
-    $q.notify({
-      spinner: false,
-      message: `${error.response.data.error.errors[0].msg}`,
+      message: "Conductor Inactivado exitosamente.",
       timeout: 2000,
       type: 'negative',
     });
+  } catch (error) {
+    handleError(error);
   }
 }
 
-async function ActivarConductor(id) {
+async function  ActivarConductor(id) {
   try {
-    showDefault();
     await conductorStore.putActivarConductor(id);
-    if (notification) {
-      notification();
-    }
+    obtenerInfo();
+
     $q.notify({
       spinner: false,
-      message: "Conductor Activado",
+      message: "Conductor Activado exitosamente.",
       timeout: 2000,
       type: 'positive',
     });
-    obtenerInfo()
   } catch (error) {
-    if (notification) {
-      notification()
-    };
-    $q.notify({
-      spinner: false,
-      message: `${error.response.data.error.errors[0].msg}`,
-      timeout: 2000,
-      type: 'negative',
-    });
+    handleError(error);
   }
 }
+
+
 
 let errorMessage = ref(""); 
 
@@ -298,8 +276,6 @@ async function validar() {
     errorMessage.value = "* Ingrese la Cedula";
   } else if (!nombre.value) {
     errorMessage.value = "* Ingrese el Nombre";
-  } else if (!bus.value) {
-    errorMessage.value = "* Seleccione un Bus";
   } else if (!experiencia.value) {
     errorMessage.value = "* Digite la experiencia, por ejemplo (4 años)"
   } else if (!telefono.value) {

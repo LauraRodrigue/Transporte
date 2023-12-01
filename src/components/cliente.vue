@@ -45,8 +45,9 @@
             <q-btn color="amber" @click="InactivarCliente(props.row._id)" v-if="props.row.estado == 1"><q-icon
                 name="❌" /></q-btn>
             <q-btn color="amber" @click="ActivarCliente(props.row._id)" v-else><q-icon
-                name="⭕" /></q-btn>
+                name="✔️" /></q-btn>
           </q-td>
+          
         </template>
       </q-table>
     </div>
@@ -76,7 +77,7 @@ async function obtenerInfo() {
   try {
     await ClienteStore.getCliente();
     clientes.value = ClienteStore.clientes;
-    rows.value = ClienteStore.clientes;
+    rows.value = ClienteStore.clientes.reverse();
   } catch (error) {
     console.log(error);
   }
@@ -204,7 +205,7 @@ async function validar() {
     errorMessage.value = "* Ingrese el nombre";
   } else if (!telefono.value) {
     errorMessage.value = "* Ingrese el teléfono";
-  } else if (telefono.value.length !== 10) {
+  } else if (telefono.value.length >= 10) {
     errorMessage.value = "* El telefono debe tener 10 Digitos";
   } 
 

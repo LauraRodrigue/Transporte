@@ -41,12 +41,13 @@
           <q-td :props="props" class="botones">
             <q-btn color="orange-14" style="margin-right: 5px;" text-color="white"
               @click="EditarHorario(props.row._id)"><q-icon name="🖋️" /></q-btn>
-            <q-btn color="amber" @click="InactivarHorario(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="❌" />
+            <q-btn color="amber" @click="InactivarHorario(props.row._id)" v-if="props.row.estado == 1"><q-icon name="❌" />
             </q-btn>
-            <q-btn color="amber" @click="ActivarHorario(props.row._id)" v-else><q-icon name="⭕" />
+            <q-btn color="amber" @click="ActivarHorario(props.row._id)" v-else><q-icon name="✔️" />
             </q-btn>
           </q-td>
+
+          <q-spinner v-if="loading" :color="spinnerColor" :size="spinnerSize" />
         </template>
       </q-table>
     </div>
@@ -71,12 +72,16 @@ let cambio = ref(0)
 const $q = useQuasar()
 let validacion = ref(true);
 
+let loading = ref(false);
+const spinnerColor = 'primary';
+const spinnerSize = '2em';
+
 
 async function obtenerInfo() {
   try {
     await HorarioStore.getHorario();
     horarios.value = HorarioStore.horarios;
-    rows.value = HorarioStore.horarios;
+    rows.value = HorarioStore.horarios.reverse();
   } catch (error) {
     console.log(error);
   }
@@ -139,8 +144,8 @@ async function agregarEditarHorario() {
       fixed.value = false;
     } catch (error) {
       console.error(error);
-      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000});
-      
+      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000 });
+
     }
   }
 }
@@ -168,19 +173,43 @@ async function EditarHorario(id) {
 }
 
 async function InactivarHorario(id) {
-  await HorarioStore.putHorarioInactivar(id);
-  obtenerInfo();
+  try {
+    await HorarioStore.putHorarioInactivar(id);
+    obtenerInfo();
+
+    $q.notify({
+      spinner: false,
+      message: "Horario Inactivado exitosamente.",
+      timeout: 2000,
+      type: 'negative',
+    });
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 async function ActivarHorario(id) {
-  await HorarioStore.putHorarioActivar(id);
-  obtenerInfo();
+  try {
+    await HorarioStore.putHorarioActivar(id);
+    obtenerInfo();
+
+    $q.notify({
+      spinner: false,
+      message: "Horario Activado exitosamente.",
+      timeout: 2000,
+      type: 'positive',
+    });
+  } catch (error) {
+    handleError(error);
+  }
 }
 
-let errorMessage = ref(""); 
+
+
+let errorMessage = ref("");
 
 async function validar() {
-  
+
   errorMessage.value = "";
 
   if (!hora_partida.value && !hora_llegada.value) {
