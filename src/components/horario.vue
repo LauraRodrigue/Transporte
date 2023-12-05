@@ -60,7 +60,10 @@ import { ref, onMounted } from 'vue';
 import { format } from 'date-fns';
 import { useHorarioStore } from '../stores/horario.js';
 import { useQuasar } from 'quasar'
+
+
 const HorarioStore = useHorarioStore()
+const $q = useQuasar();
 
 let horarios = ref([]);
 let rows = ref([]);
@@ -68,14 +71,16 @@ let fixed = ref(false)
 let text = ref('')
 let hora_partida = ref('');
 let hora_llegada = ref();
-let cambio = ref(0)
-const $q = useQuasar()
-let validacion = ref(true);
+let cambio = ref(0);
+let notification = ref(null);
 
-let loading = ref(false);
-const spinnerColor = 'primary';
-const spinnerSize = '2em';
 
+function showNotification(message, type) {
+  notification.value = $q.notify({
+    message: message,
+    type: type,
+  });
+}
 
 async function obtenerInfo() {
   try {
@@ -121,31 +126,36 @@ function agregarHorario() {
 async function agregarEditarHorario() {
   validar();
   if (validacion.value) {
-    try {
-      if (cambio.value === 0) {
+    if (cambio.value === 0) {
+      try {
+        showNotification("Please wait...", "positive");
         await HorarioStore.postHorario({
           hora_partida: hora_partida.value,
           hora_llegada: hora_llegada.value,
         });
         limpiar();
+        showNotification("Horario Agregado", "positive");
         obtenerInfo();
-        fixed.value = false;
-      } else {
-        let id = idHorario.value;
-        if (id) {
+      } catch (error) {
+        showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
+      }
+    } else {
+      let id = idHorario.value;
+      if (id) {
+        try {
+          showNotification("Please wait...", "positive");
           await HorarioStore.putHorario(id, {
             hora_partida: hora_partida.value,
             hora_llegada: hora_llegada.value,
           });
+          limpiar();
+          showNotification("Horario Actualizado", "positive");
+          obtenerInfo();
+          fixed.value = false;
+        } catch (error) {
+          showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
         }
       }
-      limpiar();
-      obtenerInfo();
-      fixed.value = false;
-    } catch (error) {
-      console.error(error);
-      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000 });
-
     }
   }
 }
@@ -204,7 +214,7 @@ async function ActivarHorario(id) {
   }
 }
 
-
+let validacion = ref(true);
 
 let errorMessage = ref("");
 

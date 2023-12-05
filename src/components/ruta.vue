@@ -75,6 +75,14 @@ let horario = ref("");
 let origen = ref("");
 let destino = ref("");
 let cambio = ref(0);
+let notification = ref(null);
+
+function showNotification(message, type) {
+  notification.value = $q.notify({
+    message: message,
+    type: type,
+  });
+}
 
 async function obtenerInfo() {
   try {
@@ -143,68 +151,36 @@ async function editarAgregarRuta() {
   if (validacion.value) {
     if (cambio.value === 0) {
       try {
-        showDefault();
+        showNotification("Please wait...", "positive");
         await rutaStore.postRuta({
           precio: precio.value,
           horario_id: horario._rawValue.value,
           origen: origen.value,
           destino: destino.value,
         });
-        if (notification) {
-          notification();
-        }
         limpiar();
-        $q.notify({
-          spinner: false,
-          message: "Ruta Agregada",
-          timeout: 2000,
-          type: "positive",
-        });
+        showNotification("Ruta Agregada", "positive");
         obtenerInfo();
       } catch (error) {
-        if (notification) {
-          notification();
-        }
-        $q.notify({
-          spinner: false,
-          message: `${error.response.data.error.errors[0].msg}`,
-          timeout: 2000,
-          type: "negative",
-        });
+        showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
       }
     } else {
       let id = idRuta.value;
       if (id) {
         try {
-          showDefault();
+          showNotification("Please wait...", "positive");
           await rutaStore.putEditarRuta(id, {
             precio: precio.value,
             horario_id: horario._rawValue.value,
             origen: origen.value,
             destino: destino.value,
           });
-          if (notification) {
-            notification();
-          }
           limpiar();
-          $q.notify({
-            spinner: false,
-            message: "Ruta Actualizada",
-            timeout: 2000,
-            type: "positive",
-          });
+          showNotification("Ruta Actualizada", "positive");
           obtenerInfo();
           fixed.value = false;
         } catch (error) {
-          if (notification) {
-            notification();
-          }
-          $q.notify({
-            spinner: false,
-            message: `${error.response.data.error.errors[0].msg}`,
-            timeout: 6000,
-            type: "negative",
-          });
+          showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
         }
         
       }
@@ -273,7 +249,7 @@ async function ActivarRuta(id) {
 }
 
 
-
+let validacion = ref(true)
 
 let errorMessage = ref(""); 
 
