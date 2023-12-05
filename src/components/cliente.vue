@@ -121,41 +121,75 @@ async function agregarCliente() {
   text.value = "Agregar Cliente";
   cambio.value = 0;
   limpiar();
-  // Restablecer el mensaje de error al agregar
   errorMessage.value = "";
-  // Restablecer la validación al agregar
   validacion.value = true;
+
+  try {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  } catch (error) {
+    
+    $q.notify({
+      type: 'negative',
+      color: 'negative',
+      message: 'Hubo un error al agregar el cliente',
+      timeout: 3000
+    });
+    console.error(error);
 }
+}
+
 
 async function agregarEditarCliente() {
   validar();
   if (validacion.value) {
-  try {
-    if (cambio.value === 0) {
-      await ClienteStore.postCliente({
-        cedula: cedula.value,
-        nombre: nombre.value,
-        telefono: telefono.value,
-      });
-    } else {
-      let id = idCliente.value;
-      if (id) {
-        await ClienteStore.putCliente(id, {
+    try {
+      if (cambio.value === 0) {
+        await ClienteStore.postCliente({
           cedula: cedula.value,
           nombre: nombre.value,
           telefono: telefono.value,
         });
+        
+        $q.notify({
+          type: 'positive',
+          color: 'positive',
+          message: 'Cliente agregado exitosamente',
+          timeout: 3000
+        });
+      } else {
+
+        $q.notify({
+          type: 'positive',
+          color: 'positive',
+          message: 'Dato actualizado',
+          timeout: 1000
+        });
+
+        let id = idCliente.value;
+        if (id) {
+          await ClienteStore.putCliente(id, {
+            cedula: cedula.value,
+            nombre: nombre.value,
+            telefono: telefono.value,
+          });
+        }
       }
+
+      limpiar();
+      obtenerInfo();
+      fixed.value = false;
+    } catch (error) {
+      $q.notify({
+        type: 'negative',
+        color: 'negative',
+        message: error.response.data.error.errors[0].msg,
+        timeout: 6000
+      });
+      console.error(error);
     }
-    limpiar();
-    obtenerInfo();
-    fixed.value = false;
-  } catch (error) {
-    $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000});
-    console.error(error);
   }
 }
-}
+
 
 function limpiar() {
   cedula.value = "";
@@ -163,9 +197,11 @@ function limpiar() {
   telefono.value = "";
 }
 
-let idCliente = ref("");
+let idCliente = ref(false);
+
 async function EditarCliente(id) {
-  cambio.value = 1;
+  cambio.value = 0 ;
+  idCliente.value = true; 
   const clienteSeleccionado = clientes.value.find((cliente) => cliente._id === id);
   if (clienteSeleccionado) {
     idCliente.value = String(clienteSeleccionado._id);
@@ -174,47 +210,62 @@ async function EditarCliente(id) {
     cedula.value = clienteSeleccionado.cedula;
     nombre.value = clienteSeleccionado.nombre;
     telefono.value = clienteSeleccionado.telefono;
-    // Restablecer el mensaje de error al editar
+
     errorMessage.value = "";
     // Restablecer la validación al editar
     validacion.value = true;
   }
 }
 
+
+
 async function InactivarCliente(id) {
-  await ClienteStore.putClienteInactivar(id);
-  obtenerInfo();
+  try {
+    await ClienteStore.putClienteInactivar(id);
+    obtenerInfo();
+    $q.notify({ type: 'negative', color: 'negative', message: 'Cliente inactivado exitosamente.' });
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 async function ActivarCliente(id) {
-  await ClienteStore.putClienteActivar(id);
-  obtenerInfo();
+  try {
+    await ClienteStore.putClienteActivar(id);
+    obtenerInfo();
+    $q.notify({ type: 'positive', color: 'positive', message: 'Cliente activado exitosamente.' });
+  } catch (error) {
+    handleError(error);
+  }
 }
+
 
 let errorMessage = ref(""); 
 
 async function validar() {
-
   errorMessage.value = "";
+  
 
-  if (!cedula.value && !nombre.value && !telefono.value) {
+  if (!cedula.value && !nombre.value && !telefono.value ) {
     errorMessage.value = "* Por favor rellene todos los campos";
   } else if (!cedula.value) {
     errorMessage.value = "* Ingrese la cédula";
   } else if (!nombre.value) {
     errorMessage.value = "* Ingrese el nombre";
-  } else if (!telefono.value) {
-    errorMessage.value = "* Ingrese el teléfono";
-  } else if (telefono.value.length >= 10) {
-    errorMessage.value = "* El telefono debe tener 10 Digitos";
-  } 
+  } else if (cambio.value === 0 && (!telefono.value || telefono.value.length !== 10)) {
+    errorMessage.value = "* El teléfono debe tener exactamente 10 dígitos";
+  }
 
+  
   setTimeout(() => {
     errorMessage.value = '';
   }, 5000);
-
+  
 
   validacion.value = errorMessage.value === "";
-
+  idCliente.value = false;
 }
+
+
 </script>
+

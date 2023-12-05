@@ -30,8 +30,8 @@
     </q-dialog>
     <div align="center">
       <h3 align="center">Vendedor</h3>
-      <div class="btn-agregar" style="margin-bottom: 5%;">
-        <q-btn color="green" label="Agregar" @click="agregarVendedor()" />
+      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
+        <q-btn color="green" label="Agregar " @click="agregarConductor" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
@@ -47,7 +47,7 @@
             <q-btn color="amber" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1"><q-icon
                 name="❌" /></q-btn>
             <q-btn color="amber" @click="ActivarVendedor(props.row._id)" v-else><q-icon
-                name="⭕" /></q-btn>
+                name="✔️" /></q-btn>
           </q-td>
         </template>
       </q-table>
@@ -94,7 +94,6 @@ const columns = [
   { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "center" },
   { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "center" },
   { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true, align: "center" },
-  { name: "clave", label: "Clave", field: "clave", sortable: true, align: "center" },
   { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
   {
     name: "estado",
