@@ -53,10 +53,7 @@
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="white" text-color="black" label="🖋️" @click="EditarTicket(props.row._id)"/>
             <q-btn color="white" text-color="black" label="📄" @click="generarPDF(props.row)"/>
-            <q-btn color="white" text-color="black" label="❌" @click="InactivarTicket(props.row._id)" v-if="props.row.estado == 1"/>
-            <q-btn color="white" text-color="black" label="✅" @click="ActivarTicket(props.row._id)" v-else/>
           </q-td>
         </template>
       </q-table>
