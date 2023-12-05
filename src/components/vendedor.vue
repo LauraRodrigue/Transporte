@@ -10,11 +10,11 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh;" @submit.prevent="validar">
-          <q-input v-model="cedula" label="Cédula" style="width: 400px" />
-          <q-input v-model="nombre" label="Nombre" style="width: 400px" />
-          <q-input v-model="cuenta" label="Cuenta" style="width: 400px" />
-          <q-input v-model="clave" label="Clave" style="width: 400px" />
-          <q-input v-model="telefono" label="Telefono" style="width: 400px" />
+          <q-input v-model="cedula" label="Cédula" style="width: 380px" />
+          <q-input v-model="nombre" label="Nombre" style="width: 380px" />
+          <q-input v-model="cuenta" label="Cuenta" style="width: 380px" />
+          <q-input v-model="telefono" label="Telefono" style="width: 380px" />
+          <q-input v-model="clave" label="clave" style="width: 380px" />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -31,7 +31,7 @@
     <div align="center">
       <h3 align="center">Vendedor</h3>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
-        <q-btn color="green" label="Agregar " @click="agregarConductor" />
+        <q-btn color="green" label="Agregar " @click="agregarVendedor" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
@@ -70,7 +70,7 @@ let text = ref("");
 let cedula = ref("");
 let nombre = ref();
 let cuenta = ref("");
-let clave = ref("");
+let clave = ref();
 let telefono = ref("");
 let cambio = ref(0);
 const $q = useQuasar()
@@ -180,7 +180,6 @@ async function EditarVendedor(id) {
     cedula.value = vendedorSeleccionado.cedula;
     nombre.value = vendedorSeleccionado.nombre;
     cuenta.value = vendedorSeleccionado.cuenta;
-    clave.value = vendedorSeleccionado.clave;
     telefono.value = vendedorSeleccionado.telefono;
   }
 }
