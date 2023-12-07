@@ -11,21 +11,22 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh">
-          <q-input type="text" v-model="cedula" label="Cedula" style="width: 300px" />
-          <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" />
-          <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" />
-          <q-input type="text" v-model="telefono" label="Telefono" style="width: 300px" />
+          <q-input type="number" v-model="cedula" label="Cedula" style="width: 300px" @keydown.space.prevent />          
+          <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" @keydown.space.prevent />
+          <q-input type="number" v-model="telefono" label="Telefono" style="width: 300px" @keydown.space.prevent  />
 
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
         <q-separator />
 
-        <q-card-actions align="right">
+        <q-card-actions align="right"> 
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="editarAgregarConductor" />
         </q-card-actions>
       </q-card>
     </q-dialog>
+
     <div align="center">
       <h3>Conductores</h3>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">

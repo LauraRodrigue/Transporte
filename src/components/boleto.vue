@@ -26,7 +26,7 @@
               <q-select v-model="bus" :options="optionsBus" label="Bus"/> 
             </div>
           </div>
-          <q-input type="number" v-model="no_asiento" label="Numero Asiento" style="width: 300px" />
+          <q-input type="number" v-model="no_asiento" label="Numero Asiento" style="width: 300px"  />
           <q-input type="date" v-model="fecha_departida" label="Fecha Partida" style="width: 300px" />
         </q-card-section>
         <q-separator />

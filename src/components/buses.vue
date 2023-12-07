@@ -11,11 +11,11 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" />
-          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" />
-          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" />
-          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px" />
-          <q-input type="text" v-model="conductor_id" label="ID del Conductor" style="width: 300px" />
+          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" @keydown.space.prevent/>
+          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px" @keydown.space.prevent/>
+          <q-input type="text" v-model="conductor_id" label="ID del Conductor" style="width: 300px" @keydown.space.prevent/>
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
             </div>
