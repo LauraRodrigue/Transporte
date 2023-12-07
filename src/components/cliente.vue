@@ -10,9 +10,9 @@
         <q-separator />
 
         <q-card-section style="max-height: 60vh;" @submit.prevent="validar">
-      <q-input v-model="cedula" label="Cédula" style="width: 380px" />
-      <q-input v-model="nombre" label="Nombre" style="width: 380px" />
-      <q-input v-model="telefono" label="Telefono" style="width: 380px" />
+      <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" @keydown.space.prevent/>
+      <q-input v-model="nombre" label="Nombre" style="width: 380px" @keydown.space.prevent/>
+      <q-input type="number" v-model="telefono" label="Telefono" style="width: 380px" @keydown.space.prevent/>
 
       <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
     </q-card-section>
