@@ -1,10 +1,7 @@
-// FILE: vite.config.js
-
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue({
@@ -16,5 +13,12 @@ export default defineConfig({
     quasar({
       sassVariables: 'src/quasar-variables.sass'
     })
-  ]
-})
+  ],
+  css: {
+    preprocessorOptions: {
+      sass: {
+        // Configuración de Sass aquí
+      },
+    },
+  },
+});
