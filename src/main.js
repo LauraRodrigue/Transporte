@@ -11,10 +11,10 @@ import axios from 'axios';
 axios.defaults.baseURL = "https://transporte-czaa.onrender.com/api/"
 
 const pinia = createPinia();
-const app = createApp(App);
+const Myapp = createApp(App);
 
 
-app.use(Quasar, {
+Myapp.use(Quasar, {
   plugins: {
     Notify
   },
@@ -28,9 +28,9 @@ app.use(Quasar, {
   }
 });
 
-app.use(pinia);
-app.use(router);
-app.mount('#app');
+Myapp.use(pinia);
+Myapp.use(router);
+Myapp.mount('#app');
 
 
 
