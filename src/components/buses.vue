@@ -27,7 +27,7 @@
   
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
-          <q-btn label="Guardar" color="green" @click="editarAgregarBus()" />
+          <q-btn label="Guardar" color="green" @click="editarAgregarBus" />
         </q-card-actions>
       </q-card>
     </q-dialog>
