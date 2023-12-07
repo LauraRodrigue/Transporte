@@ -78,6 +78,7 @@ const vendedorStore = useVendedorStore();
 const clienteStore = useClienteStore();
 const rutaStore = useRutaStore();
 
+
 let tickets = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
@@ -180,7 +181,7 @@ const columns = [
   { name: "ruta_id", label: "Horario Partida - Llegada", field: (row) =>   `${row.ruta_id.horario_id.hora_partida} - ${row.ruta_id.horario_id.hora_llegada}`,},
   { name: "no_asiento", label: "N° Asiento", field: "no_asiento", sortable: true,},
   { name: "fecha_departida", label: "Fecha de partida", field: "fecha_departida", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
-  { name: "precio",label: "Valor", field: (row) => `${row.ruta_id.precio}`,},
+  { name: "precio", label: "Valor", field: (row) => `${row.ruta_id.precio.toLocaleString()}` },
   { name: "estado", label: "Estado", field: "estado", sortable: true },
   { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false,},
