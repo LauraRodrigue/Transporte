@@ -26,7 +26,7 @@
               <q-select v-model="bus" :options="optionsBus" label="Bus"/> 
             </div>
           </div>
-          <q-input type="number" v-model="no_asiento" label="Numero Asiento" style="width: 300px" />
+          <q-input type="number" v-model="no_asiento" label="Numero Asiento" style="width: 300px"  />
           <q-input type="date" v-model="fecha_departida" label="Fecha Partida" style="width: 300px" />
         </q-card-section>
         <q-separator />
@@ -77,6 +77,7 @@ const ticketStore = useTicketStore();
 const vendedorStore = useVendedorStore();
 const clienteStore = useClienteStore();
 const rutaStore = useRutaStore();
+
 
 let tickets = ref([]);
 let rows = ref([]);
@@ -173,16 +174,17 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cliente_id", label: "Info Cliente", field: (row) =>   `${row.cliente_id.nombre} - ${row.cliente_id.cedula}- ${row.cliente_id.telefono}`,},
-  { name: "bus_id", label: "Info Bus", field: (row) =>   `${row.bus_id.empresa_asignada} - ${row.bus_id.placa} - N°${row.bus_id.numero_bus} `,},
-  { name: "vendedor_id", label: "Info Vendedor", field: (row) => `${row.vendedor_id.nombre} - ${row.vendedor_id.telefono}`,},
-  { name: "ruta_id", label: "Ruta Origen - Destino", field: (row) => `${row.ruta_id.origen} - ${row.ruta_id.destino}`,},
-  { name: "ruta_id", label: "Horario Partida - Llegada", field: (row) =>   `${row.ruta_id.horario_id.hora_partida} - ${row.ruta_id.horario_id.hora_llegada}`,},
-  { name: "no_asiento", label: "N° Asiento", field: "no_asiento", sortable: true,},
-  { name: "fecha_departida", label: "Fecha de partida", field: "fecha_departida", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
-  { name: "estado", label: "Estado", field: "estado", sortable: true },
-  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
-  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false,},
+  { name: "cliente_id", label: "Info Cliente", align:"left" , field: (row) =>   `${row.cliente_id.nombre} - ${row.cliente_id.cedula}- ${row.cliente_id.telefono}`,},
+  { name: "bus_id", label: "Info Bus", align:"center" , field: (row) =>   `${row.bus_id.empresa_asignada} - ${row.bus_id.placa} - N°${row.bus_id.numero_bus} `,},
+  { name: "vendedor_id", label: "Info Vendedor", align:"center", field: (row) => `${row.vendedor_id.nombre} - ${row.vendedor_id.telefono}`,},
+  { name: "ruta_id", label: "Ruta Origen - Destino", align:"center" ,field: (row) => `${row.ruta_id.origen} - ${row.ruta_id.destino}`,},
+  { name: "ruta_id", label: "Horario Partida - Llegada",align:"center" , field: (row) =>   `${row.ruta_id.horario_id.hora_partida} - ${row.ruta_id.horario_id.hora_llegada}`,},
+  { name: "no_asiento", label: "N° Asiento",align:"center", field: "no_asiento", sortable: true,},
+  { name: "fecha_departida", label: "Fecha de partida",align:"center", field: "fecha_departida", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
+  { name: "precio",label: "Valor",align:"center", field: (row) => `${row.ruta_id.precio}`,},
+  { name: "estado", label: "Estado",align:"center", field: "estado", sortable: true },
+  { name: "createAT", label: "Fecha de Creación", align:"center",field: "createAT", sortable: true, format: (val) => format(new Date(val), "yyyy-MM-dd"),},
+  { name: "opciones", label: "Opciones",align:"center", field: (row) => null, sortable: false,},
 ];
 
 // Editar Ticket Funcionamiento
@@ -374,19 +376,41 @@ watch(fixed, () => {
 
 // Hacer PDF 
 function generarPDF(ticket) {
- 
+  const valorFormateado = ticket.ruta_id.precio.toLocaleString();
   const doc = new jsPDF();
 
-  doc.text(`Información del Ticket`, 20, 10);
-  doc.text(`Cliente: ${ticket.cliente_id.nombre} - ${ticket.cliente_id.cedula} - ${ticket.cliente_id.telefono}`, 20, 20);
-  doc.text(`Vendedor: ${ticket.vendedor_id.nombre} - ${ticket.vendedor_id.telefono}`, 20, 30);
-  doc.text(`Bus: ${ticket.bus_id.empresa_asignada} - ${ticket.bus_id.placa} - N°${ticket.bus_id.numero_bus}`, 20, 40);
-  doc.text(`Ruta: ${ticket.ruta_id.origen} - ${ticket.ruta_id.destino}`, 20, 50);
-  doc.text(`Horario: ${ticket.ruta_id.horario_id.hora_partida} - ${ticket.ruta_id.horario_id.hora_llegada}`, 20, 60);
-  doc.text(`N° Asiento: ${ticket.no_asiento}`, 20, 70);
-  doc.text(`Fecha de Partida: ${format(new Date(ticket.fecha_departida), "yyyy-MM-dd")}`, 20, 80);
+  doc.line(20, 13, 190, 13);
+  doc.line(20, 14, 190, 14);
+  doc.text(`Información del Ticket`, 80, 25);
+  doc.line(20, 33, 190, 33);
+  doc.line(20, 34, 190, 34);
+  doc.text(`N° Asiento: ${ticket.no_asiento}`, 150, 40);
+  doc.text(`Ruta: ${ticket.ruta_id.origen} - ${ticket.ruta_id.destino}`, 25, 40);
+  doc.text(`Hora de partida: ${ticket.ruta_id.horario_id.hora_partida}`, 25, 50);
+  doc.text(`Fecha de Partida: ${format(new Date(ticket.fecha_departida), "yyyy-MM-dd")}`, 25, 60);
+  doc.line(20, 63, 190, 63);
+  doc.line(20, 64, 190, 64);
+  doc.text(`Empresa: ${ticket.bus_id.empresa_asignada}`, 25, 70);
+  doc.text(`Placa-Bus: ${ticket.bus_id.placa}`, 25, 80);
+  doc.text(`N°-Bus: ${ticket.bus_id.numero_bus}`, 25, 90);
+  doc.line(20, 93, 190, 93);
+  doc.line(20, 94, 190, 94);
+  doc.text(`Cliente: ${ticket.cliente_id.nombre}`, 25, 100);
+  doc.text(`Documento: ${ticket.cliente_id.cedula}`, 25, 110);
+  doc.text(`Telefono: ${ticket.cliente_id.telefono}`,25, 120);
+  doc.line(20, 123, 190, 123);
+  doc.line(20, 124, 190, 124);
+  doc.text(`Vendedor: ${ticket.vendedor_id.nombre}`, 25, 130);
+  doc.text(`Telefono: ${ticket.vendedor_id.telefono}`, 25, 140);
+  doc.line(20, 143, 190, 143);
+  doc.line(20, 144, 190, 144);
+  doc.text(`Valor Total: $ ${valorFormateado}`, 135, 150);
+  doc.line(20, 153, 190, 153);
+  doc.line(20, 154, 190, 154);
 
   doc.save(`ticket_${ticket._id}.pdf`);
+
+  console.log(ticket);
 }
 </script>
     

@@ -17,8 +17,8 @@
               <q-select v-model="horario" :options="options" label="Horario" />
             </div>
           </div>
-          <q-input  type="text"  v-model="origen"  label="Origen"  style="width: 300px"/>
-          <q-input  type="text"  v-model="destino"  label="Destino"  style="width: 300px"/>
+          <q-input  type="text"  v-model="origen"  label="Origen"  style="width: 300px" @keydown.space.prevent/>
+          <q-input  type="text"  v-model="destino"  label="Destino"  style="width: 300px" @keydown.space.prevent/>
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
