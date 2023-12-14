@@ -36,24 +36,23 @@
             </div>
           </div>
         </div>
-          <div class="col-3" align="center" style="margin-top: 60px;">
-            <div v-if="asientos.length" class="container-bus">
-              <div v-for="i in asientos" :key="i" class="container-asientos">
-                <q-btn padding="md" size="22px" :value="i.numero" @click="!i.ocupado && (no_asiento = i.numero)" :style="{
+          <div class="col-6" align="center" style="margin-top: 60px;">
+            <div class="row" v-if="asientos.length">
+              <div class="row" v-for="i in asientos" :key="i">
+                <q-btn padding="md" size="23px" class="btn" :value="i.numero" @click="!i.ocupado && (no_asiento = i.numero)" :style="{
                   backgroundColor: no_asiento === i.numero ? 'orange' : i.ocupado ? 'orange' : 'initial',
-                  cursor: i.ocupado ? 'not-allowed' : 'pointer',
+                  cursor: i.ocupado ? 'not-allowed' : 'pointer', 
                 }"> 💺{{ i.numero }}
                 </q-btn>
               </div>
-            </div>
-          
+            </div>    
         </div>
       </div>
     </div>
   </div>
 </template>
 
-    
+
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useBusStore } from "../stores/buses.js";
@@ -483,10 +482,17 @@ function getFechaActual() {
 .bnt-bc {
   margin-top: 35px;
   margin-bottom: 15px;
+  margin-right: 6px;
 }
 
 .btn-c {
   margin-top: 6px;
+  margin-right: 6px;
+}
+.btn{
+  width: 90px;
+  height: 80px;
+  padding: 2px;
 }
 
 .label {
@@ -494,4 +500,5 @@ function getFechaActual() {
   border-radius: 5px;
   border: solid gray 1px;
   margin: 8px;
-}</style>
+}
+</style>
