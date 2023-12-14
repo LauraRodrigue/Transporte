@@ -24,8 +24,8 @@
           </div>
           <div class="busCliente">
             <div v-if="showClienteDiv" class="cliente" align="center">
-              <h2 v-if="no_asiento" class="asientoNumero" style="padding: 0;margin: 8px; font-family: 'Kanit', sans-serif;">
-              Asiento N°{{ no_asiento }}</h2>
+              <h4 v-if="no_asiento" class="asientoNumero" style="padding: 0;margin: 8px; margin-top: 30px; font-family: 'Kanit', sans-serif;">
+              Asiento N°{{ no_asiento }}</h4>
               <q-btn class="bnt-bc" color="amber" label="Agregar Cliente" @click="agregarCliente" />
               <q-btn class="bnt-bc" color="orange-10" label="Buscar Cliente" @click="buscarCliente()" />
               <q-input lass="label" standout v-model="cedula" label="Cedula del Cliente" style="width: 300px" />
@@ -36,13 +36,13 @@
             </div>
           </div>
         </div>
-          <div class="col-6" align="center" style="margin-top: 60px;">
+          <div class="col-3" align="center" style="margin-top: 60px;">
             <div v-if="asientos.length" class="container-bus">
               <div v-for="i in asientos" :key="i" class="container-asientos">
-                <q-btn padding="md" size="22px" :value="i" @click="no_asiento = i" :style="{
-                  backgroundColor: no_asiento === i ? 'orange' : puestos.includes(i) ? 'red' : 'initial',
-                  cursor: puestos.includes(i) ? 'not-allowed' : 'pointer',
-                }"> 💺{{ i }}
+                <q-btn padding="md" size="22px" :value="i.numero" @click="!i.ocupado && (no_asiento = i.numero)" :style="{
+                  backgroundColor: no_asiento === i.numero ? 'orange' : i.ocupado ? 'orange' : 'initial',
+                  cursor: i.ocupado ? 'not-allowed' : 'pointer',
+                }"> 💺{{ i.numero }}
                 </q-btn>
               </div>
             </div>

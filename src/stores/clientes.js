@@ -5,14 +5,14 @@ import { ref } from 'vue';
 
 export const useClienteStore = defineStore('cliente', () => {
     const clientes = ref([])
-    const getCliente = async () => {
+    const obtenerInfoClientes = async () => {
         try {
-            let res = await axios.get(`/cliente/cliente`);
-            clientes.value = res.data.cliente;
+            let responseClientes = await axios.get('/cliente/cliente');
+            clientes.value = responseClientes.data.cliente; 
         } catch (error) {
             throw error
         }
-    }
+    };
     const postCliente = async (data) =>{
         try {
             let res = await axios.post("cliente/cliente/agregar", data);
@@ -50,6 +50,6 @@ export const useClienteStore = defineStore('cliente', () => {
 
     return {
         clientes,
-        getCliente, postCliente, putCliente, putClienteInactivar, putClienteActivar
+        obtenerInfoClientes, postCliente, putCliente, putClienteInactivar, putClienteActivar
     };
 });
