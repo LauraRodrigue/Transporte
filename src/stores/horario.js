@@ -5,6 +5,21 @@ import { ref } from 'vue';
 
 export const useHorarioStore = defineStore('horario', () => {
     const horarios = ref([])
+
+
+     /* const getHorarioActivos = async () => {
+        try {
+          let res = await axios.get(`/horario/horario`);
+      
+          // Filtrar los horarios activos (estado === 1)
+          const horariosActivos = res.data.horario.filter(horario => horario.estado === 1);
+      
+          return horariosActivos;
+        } catch (error) {
+          throw error;
+        }
+      };*/
+      
     const getHorario = async () => {
         try {
             let res = await axios.get(`/horario/horario`);

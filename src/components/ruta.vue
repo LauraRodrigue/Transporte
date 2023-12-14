@@ -31,7 +31,7 @@
       </q-card>
     </q-dialog>
     <div align="center">
-      <h3>Rutas</h3>
+      <h2>Rutas</h2>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar" @click="agregarRuta()" />
       </div>
@@ -144,6 +144,7 @@ function agregarRuta() {
   fixed.value = true;
   text.value = "Agregar Ruta";
   cambio.value = 0;
+  limpiar();
 }
 
 async function editarAgregarRuta() {

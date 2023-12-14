@@ -3,6 +3,10 @@
     margin: 3%;
 }
 
+.scroll {
+  overflow: hidden;
+}
+
 /* tablas buses */
 .modal-content {
   width: 400px;

@@ -11,14 +11,13 @@
 
         <q-card-section style="max-height: 50vh;" @submit.prevent="validar">
           <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" @keydown.space.prevent />
-          <q-input v-model="nombre" label="Nombre" style="width: 380px" @keydown.space.prevent/>
-          <q-input v-model="cuenta" label="Cuenta" style="width: 380px" @keydown.space.prevent/>
+          <q-input v-model="nombre" label="Nombre" style="width: 380px" @keydown.space.prevent />
+          <q-input v-model="cuenta" label="Cuenta" style="width: 380px" @keydown.space.prevent />
           <q-input type="number" v-model="telefono" label="Telefono" style="width: 380px" @keydown.space.prevent />
-          <q-input v-model="clave" label="clave" style="width: 380px" @keydown.space.prevent/>
+          <q-input v-if="esAgregando" v-model="clave" label="Clave" style="width: 380px" @keydown.space.prevent />
 
-          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
+          <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
-
 
         <q-separator />
 
@@ -29,25 +28,22 @@
       </q-card>
     </q-dialog>
     <div align="center">
-      <h3 align="center">Vendedor</h3>
+      <h2 align="center">Vendedor</h2>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar " @click="agregarVendedor" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green;">Activo</label>
-            <label for="" v-else style="color: red;">Inactivo</label>
+            <label v-if="props.row.estado == 1" style="color: green;">Activo</label>
+            <label v-else style="color: red;">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn color="orange-14" style="margin-right: 5px" @click="EditarVendedor(props.row._id)"><q-icon
-                name="🖋️" /></q-btn>
-            <q-btn color="amber" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1"><q-icon
-                name="❌" /></q-btn>
-            <q-btn color="amber" @click="ActivarVendedor(props.row._id)" v-else><q-icon
-                name="✔️" /></q-btn>
+            <q-btn color="orange-14" style="margin-right: 5px" @click="EditarVendedor(props.row._id)"><q-icon name="🖋️" /></q-btn>
+            <q-btn color="amber" @click="InactivarVendedor(props.row._id)" v-if="props.row.estado == 1"><q-icon name="❌" /></q-btn>
+            <q-btn color="amber" @click="ActivarVendedor(props.row._id)" v-else><q-icon name="✔️" /></q-btn>
           </q-td>
         </template>
       </q-table>
@@ -56,7 +52,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useVendedorStore } from "../stores/vendedor.js";
@@ -68,23 +63,17 @@ let rows = ref([]);
 let fixed = ref(false);
 let text = ref("");
 let cedula = ref("");
-let nombre = ref();
+let nombre = ref("");
 let cuenta = ref("");
-let clave = ref();
+let clave = ref("");
 let telefono = ref("");
 let cambio = ref(0);
-const $q = useQuasar()
+const $q = useQuasar();
+let idVendedor = ref("");
 let validacion = ref(true);
-
-async function obtenerInfo() {
-  try {
-    await VendedorStore.getVendedor();
-    vendedores.value = VendedorStore.vendedores;
-    rows.value = VendedorStore.vendedores.reverse();
-  } catch (error) {
-    console.log(error);
-  }
-}
+let esAgregando = ref(false);
+let claveVisible = ref("");
+let claveCambiada = ref(false);
 
 onMounted(async () => {
   obtenerInfo();
@@ -95,42 +84,40 @@ const columns = [
   { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "center" },
   { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true, align: "center" },
   { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
-  {
-    name: "estado",
-    label: "Estado",
-    field: "estado",
-    sortable: true,
-    align: "center",
-    format: (val) => (val ? "Activo" : "Inactivo"),
-  },
-  {
-    name: "createAT",
-    label: "Fecha de Creación",
-    field: "createAT",
-    sortable: true,
-    align: "center",
-    format: (val) => format(new Date(val), "yyyy-MM-dd"),
-  },
-  {
-    name: "opciones",
-    label: "Opciones",
-    field: (row) => null,
-    sortable: false,
-    align: "center"
-  },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center", format: (val) => (val ? "Activo" : "Inactivo") },
+  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center", format: (val) => format(new Date(val), "yyyy-MM-dd") },
+  { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
 ];
 
 function agregarVendedor() {
   fixed.value = true;
   text.value = "Agregar Vendedor";
   cambio.value = 0;
+  esAgregando.value = true;
+  claveCambiada.value = false;
   limpiar();
+}
+
+async function EditarVendedor(id) {
+  cambio.value = 1;
+  esAgregando.value = false;
+  const vendedorSeleccionado = vendedores.value.find((vendedor) => vendedor._id === id);
+  if (vendedorSeleccionado) {
+    idVendedor.value = String(vendedorSeleccionado._id);
+    fixed.value = true;
+    text.value = "Editar Vendedor";
+    cedula.value = vendedorSeleccionado.cedula;
+    nombre.value = vendedorSeleccionado.nombre;
+    cuenta.value = vendedorSeleccionado.cuenta;
+    telefono.value = vendedorSeleccionado.telefono;
+    clave.value = vendedorSeleccionado.clave;  // Establecer la clave actual
+  }
 }
 
 async function agregarEditarVendedor() {
   validar();
   if (validacion.value) {
-  try {
+    try {
       if (cambio.value === 0) {
         await VendedorStore.postVendedor({
           cedula: cedula.value,
@@ -142,20 +129,31 @@ async function agregarEditarVendedor() {
       } else {
         let id = idVendedor.value;
         if (id) {
-          await VendedorStore.putVendedor(id, {
+          const datosVendedor = {
             cedula: cedula.value,
             nombre: nombre.value,
             cuenta: cuenta.value,
-            clave: clave.value,
             telefono: telefono.value,
-          });
+          };
+
+          if (esAgregando.value || clave.value !== claveVisible.value) {
+            datosVendedor.clave = clave.value;
+            claveCambiada.value = true;
+          }
+
+          await VendedorStore.putVendedor(id, datosVendedor);
         }
       }
       limpiar();
       obtenerInfo();
       fixed.value = false;
     } catch (error) {
-      $q.notify({ type: 'negative', color: 'negative', message: error.response.data.error.errors[0].msg, timeout: 6000 });
+      $q.notify({
+        type: 'negative',
+        color: 'negative',
+        message: error.response.data.error.errors[0].msg,
+        timeout: 6000
+      });
       console.error(error);
     }
   }
@@ -169,21 +167,6 @@ function limpiar() {
   telefono.value = "";
 }
 
-let idVendedor = ref("");
-async function EditarVendedor(id) {
-  cambio.value = 1;
-  const vendedorSeleccionado = vendedores.value.find((vendedor) => vendedor._id === id);
-  if (vendedorSeleccionado) {
-    idVendedor.value = String(vendedorSeleccionado._id);
-    fixed.value = true;
-    text.value = "Editar Vendedor";
-    cedula.value = vendedorSeleccionado.cedula;
-    nombre.value = vendedorSeleccionado.nombre;
-    cuenta.value = vendedorSeleccionado.cuenta;
-    telefono.value = vendedorSeleccionado.telefono;
-  }
-}
-
 async function InactivarVendedor(id) {
   await VendedorStore.putVendedorInactivar(id);
   obtenerInfo();
@@ -194,36 +177,35 @@ async function ActivarVendedor(id) {
   obtenerInfo();
 }
 
-let errorMessage = ref(""); 
+let errorMessage = ref("");
 
-async function validar() {
-
+function validar() {
   errorMessage.value = "";
 
-  if (!cedula.value && !nombre.value && !cuenta.value && clave.value && !telefono.value) {
+  if (!cedula.value || !nombre.value || !cuenta.value || !telefono.value) {
     errorMessage.value = "* Por favor rellene todos los campos";
-  } else if (!cedula.value) {
-    errorMessage.value = "* Ingrese la cédula";
-  } else if (!nombre.value) {
-    errorMessage.value = "* Ingrese el nombre";
-  }  else if (!cuenta.value) {
-    errorMessage.value = "* Ingrese un nombre para su usuario";
-  }  else if (!clave.value) {
-    errorMessage.value = "* Ingrese una contraseña con números, mayusculas y minusculas";
-  } else if (!telefono.value) {
-    errorMessage.value = "* Ingrese el teléfono";
+  } else if (!esAgregando.value && claveCambiada.value && !clave.value) {
+    errorMessage.value = "* Ingrese la contraseña";
+  } else if (esAgregando.value && !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(clave.value)) {
+    errorMessage.value = "* Ingrese una contraseña con al menos 8 caracteres, números, mayúsculas y minúsculas";
   } else if (telefono.value.length !== 10) {
-    errorMessage.value = "* El telefono debe tener 10 Digitos";
-  } 
+    errorMessage.value = "* El teléfono debe tener 10 dígitos";
+  }
 
   setTimeout(() => {
     errorMessage.value = '';
   }, 5000);
 
-
   validacion.value = errorMessage.value === "";
-
 }
 
+async function obtenerInfo() {
+  try {
+    await VendedorStore.getVendedor();
+    vendedores.value = VendedorStore.vendedores;
+    rows.value = VendedorStore.vendedores.reverse();
+  } catch (error) {
+    console.log(error);
+  }
+}
 </script>
-  

@@ -26,7 +26,7 @@
       </q-card>
     </q-dialog>
     <div align="center">
-      <h3>Horario</h3>
+      <h2>Horario</h2>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar" @click="agregarHorario()" />
       </div>

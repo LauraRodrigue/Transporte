@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="contenedor">
     <!-- Modal -->
     <q-dialog v-model="fixed">
       <q-card class="modal-content">
@@ -10,7 +10,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-section style="max-height: 50vh" class="scroll">
+        <q-card-section style="max-height: 50vh">
           <div class="q-pa" style="width: 300px;">
             <div class="q-gutter">
               <q-select v-model="vendedor" :options="optionsVendedor" label="Vendedor"/> 
@@ -37,14 +37,14 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <div class="container-table" style="height: 90vh; overflow-y: auto; width: 80%">
-      <h1>Tickets</h1>
+    <div align="center">
+      <h2>Tickets</h2>
       <div class="b-b">
         <q-input class="bbuscar" v-model="searchtieckets" label="Buscar por número de cédula del cliente" style="width: 300px" @input="filtrarticket"/>
         <q-btn color="primary" label="Buscar" @click="filtrarticket" class="btnbuscar"/>
       </div>
 
-      <q-table title="Tickets" :rows="rows" :columns="columns" row-key="name">
+      <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%;">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
             <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
@@ -416,40 +416,11 @@ function generarPDF(ticket) {
     
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Gabarito&display=swap");
-.container {
-  display: flex;
-  justify-content: center;
-}
-.modal-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.container-table {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-}
-.container-table h1 {
-  font-family: "Gabarito", sans-serif;
-  padding: 0;
-  margin: 0;
-}
 .modal-content {
   width: 400px;
 }
-
 .botones button {
   margin: 2px;
-}
-
-.btn-agregar {
-  width: 100%;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: flex-end;
 }
 
 .b-b {
@@ -476,36 +447,4 @@ function generarPDF(ticket) {
   top: 6px;
 }
 
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #3498db;
-  color: #fff;
-}
-
-.close-button {
-  color: #fff;
-}
-
-.modal-body {
-  padding: 20px;
-}
-
-.modal-input {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.modal-footer {
-  padding: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.action-button {
-  margin-left: 10px;
-}
 </style>
