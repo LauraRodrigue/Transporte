@@ -11,20 +11,19 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" @keydown.space.prevent/>
+          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" @keydown.space.prevent />
           <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" @keydown.space.prevent />
-          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px" @keydown.space.prevent />
-          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px" @keydown.space.prevent/>
-          <q-input type="text" v-model="conductor_id" label="ID del Conductor" style="width: 300px" @keydown.space.prevent/>
-          <div class="q-pa" style="width: 300px;">
-            <div class="q-gutter">
-            </div>
-          </div>
-          <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
+          <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px"
+            @keydown.space.prevent />
+          <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px"
+            @keydown.space.prevent />
+          <q-select v-model="conductor_id" :options="optionsConductores" label="Conductores"
+            style="width: 320px; margin-bottom:15px;" />
+          <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
 
         <q-separator />
-  
+
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="editarAgregarBus" />
@@ -34,7 +33,7 @@
     <div align="center">
       <h3>Buses</h3>
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
-        <q-btn color="green" label="Agregar" @click="agregarBus()" />
+        <q-btn color="green" label="Agregar" @click="agregarBus" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
@@ -48,16 +47,16 @@
             <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarBus(props.row._id)" />
             <q-btn color="amber" text-color="white" icon="❌" @click="InactivarBus(props.row._id)"
               v-if="props.row.estado == 1" />
-            <q-btn color="amber" text-color="white" icon="✔️" @click="ActivarBus(props.row._id)"
-              v-else />
+            <q-btn color="amber" text-color="white" icon="✔️" @click="ActivarBus(props.row._id)" v-else />
           </q-td>
         </template>
       </q-table>
     </div>
   </div>
 </template>
- 
+
 <script setup>
+import axios from 'axios';
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useBusStore } from "../stores/buses.js";
@@ -67,19 +66,40 @@ import { useQuasar } from "quasar";
 const $q = useQuasar();
 const busStore = useBusStore();
 const conductorStore = useConductorStore();
-const notification = $q.notify;
-
 
 let buses = ref([]);
 let rows = ref([]);
 let fixed = ref(false);
 let text = ref("");
 let placa = ref("");
-let numero_bus = ref();
+let numero_bus = ref(null);
 let cantidad_asientos = ref("");
 let empresa_asignada = ref("");
-let conductor_id = ref(""); 
+let conductor_id = ref("");
 let cambio = ref(0);
+let notification = ref(null);
+let optionsConductores = ref([]);
+
+function showNotification(message, type) {
+  notification.value = $q.notify({
+    message: message,
+    type: type,
+  });
+}
+
+async function obtenerConductores() {
+  try {
+    await conductorStore.obtenerInfoConductores();
+    optionsConductores.value = conductorStore.conductores.map((conductor) => (
+      {
+        label: `${conductor.cedula} - ${conductor.nombre}`,
+        value: String(conductor._id)
+      }));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 async function obtenerInfo() {
   try {
@@ -93,6 +113,7 @@ async function obtenerInfo() {
 
 onMounted(async () => {
   obtenerInfo();
+  obtenerConductores();
 });
 
 const columns = [
@@ -121,8 +142,7 @@ async function editarAgregarBus() {
   if (validacion.value === true) {
     if (cambio.value === 0) {
       try {
-        showDefault();
-        // Utiliza el store de conductores para obtener información del conductor
+        showNotification("Please wait...", "positive");
         const conductor = await conductorStore.obtenerConductorPorId(conductor_id.value);
         if (!conductor) {
           throw new Error("Conductor no encontrado");
@@ -132,34 +152,19 @@ async function editarAgregarBus() {
           numero_bus: numero_bus.value,
           cantidad_asientos: cantidad_asientos.value,
           empresa_asignada: empresa_asignada.value,
+          conductor_id: conductor_id.value,
         });
-        if (notification) {
-          notification();
-        }
         limpiar();
-        $q.notify({
-          spinner: false,
-          message: "Bus Agregado",
-          timeout: 2000,
-          type: "positive",
-        });
+        showNotification("Bus Agregado", "positive");
         obtenerInfo();
       } catch (error) {
-        if (notification) {
-          notification();
-        }
-        $q.notify({
-          spinner: false,
-          message: `${error.response.data.error.errors[0].msg}`,
-          timeout: 2000,
-          type: "negative",
-        });
+        showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
       }
-
     } else {
       let id = idBus.value;
       if (id) {
         try {
+          showNotification("Please wait...", "positive");
           await busStore.putEditarBus(id, {
             placa: placa.value,
             numero_bus: numero_bus.value,
@@ -167,27 +172,12 @@ async function editarAgregarBus() {
             empresa_asignada: empresa_asignada.value,
             conductor_id: conductor_id.value,
           });
-          if (notification) {
-            notification();
-          }
-          $q.notify({
-            spinner: false,
-            message: "Bus Actualizado",
-            timeout: 2000,
-            type: "positive",
-          });
+          limpiar();
+          showNotification("Bus Actualizado", "positive");
           obtenerInfo();
           fixed.value = false;
         } catch (error) {
-          if (notification) {
-            notification();
-          }
-          $q.notify({
-            spinner: false,
-            message: `${error.response.data.error.errors[0].msg}`,
-            timeout: 6000,
-            type: "negative",
-          });
+          showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
         }
       }
     }
@@ -196,15 +186,12 @@ async function editarAgregarBus() {
 
 function limpiar() {
   placa.value = "";
-  numero_bus.value = "";
+  numero_bus.value = null;
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
 }
 
 let idBus = ref("");
-
-
-
 
 async function EditarBus(id) {
   cambio.value = 1;
@@ -217,42 +204,29 @@ async function EditarBus(id) {
     numero_bus.value = busSeleccionado.numero_bus;
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
-
-    // Asegúrate de que el conductor_id sea un String con el ID del conductor
     conductor_id.value = String(busSeleccionado.conductor_id);
 
-    // Obtén información adicional del conductor
     try {
       const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value}`);
       const conductor = responseConductor.data.conductor;
 
       if (conductor) {
-        // Actualiza los datos del conductor en el modal
-        // Ajusta esto según la estructura de tu modelo de conductor
         conductor_id.label = `${conductor.nombre} ${conductor.apellido}`;
       } else {
         throw new Error("Conductor no encontrado");
       }
     } catch (error) {
-      console.error(error);
-      // Maneja el error al obtener información del conductor
-      // Puedes mostrar un mensaje o realizar acciones específicas según tus necesidades
+      showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
     }
   }
 }
-
 
 
 async function InactivarBus(id) {
   try {
     await busStore.putInactivarBus(id);
     obtenerInfo();
-    $q.notify({
-      spinner: false,
-      message: "Bus Inactivado exitosamente.",
-      timeout: 2000,
-      type: 'negative',
-    });
+    showNotification("Bus Inactivado exitosamente.", "negative");
   } catch (error) {
     handleError(error);
   }
@@ -262,34 +236,27 @@ async function ActivarBus(id) {
   try {
     await busStore.putActivarBus(id);
     obtenerInfo();
-    $q.notify({
-      spinner: false,
-      message: "Bus Activado exitosamente.",
-      timeout: 2000,
-      type: 'positive',
-    });
+    showNotification("Bus Activado exitosamente.", "positive");
   } catch (error) {
     handleError(error);
   }
 }
 
 let validacion = ref(true);
-
-
-let errorMessage = ref(""); 
+let errorMessage = ref("");
 
 async function validar() {
   errorMessage.value = "";
-  if (!placa.value && !numero_bus.value && !cantidad_asientos.value && !empresa_asignada.value) {
-    errorMessage.value = "* Por favor rellene los campos";
+  if (!placa.value || !numero_bus.value || !cantidad_asientos.value || !empresa_asignada.value) {
+    errorMessage.value = "* Por favor rellene todos los campos";
   } else if (!placa.value) {
     errorMessage.value = "* Ingrese la Placa";
   } else if (!numero_bus.value) {
-    errorMessage.value = "* Ingrese el numero del bus";
+    errorMessage.value = "* Ingrese el número del bus";
   } else if (!cantidad_asientos.value) {
     errorMessage.value = "* Ingrese la cantidad de asientos";
   } else if (!empresa_asignada.value) {
-    errorMessage.value = "* Ingrese el nombre de la empresa"
+    errorMessage.value = "* Ingrese el nombre de la empresa";
   }
   setTimeout(() => {
     errorMessage.value = '';

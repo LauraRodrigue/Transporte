@@ -74,6 +74,7 @@ let validacion = ref(true);
 let esAgregando = ref(false);
 let claveVisible = ref("");
 let claveCambiada = ref(false);
+let notification = ref(null);
 
 onMounted(async () => {
   obtenerInfo();
@@ -88,6 +89,13 @@ const columns = [
   { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center", format: (val) => format(new Date(val), "yyyy-MM-dd") },
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
 ];
+
+function showNotification(message, type) {
+  notification.value = $q.notify({
+    message: message,
+    type: type,
+  });
+}
 
 function agregarVendedor() {
   fixed.value = true;
@@ -110,7 +118,7 @@ async function EditarVendedor(id) {
     nombre.value = vendedorSeleccionado.nombre;
     cuenta.value = vendedorSeleccionado.cuenta;
     telefono.value = vendedorSeleccionado.telefono;
-    clave.value = vendedorSeleccionado.clave;  // Establecer la clave actual
+    clave.value = vendedorSeleccionado.clave;  
   }
 }
 
@@ -118,6 +126,8 @@ async function agregarEditarVendedor() {
   validar();
   if (validacion.value) {
     try {
+      showNotification("Please wait...", "positive");
+
       if (cambio.value === 0) {
         await VendedorStore.postVendedor({
           cedula: cedula.value,
@@ -126,35 +136,29 @@ async function agregarEditarVendedor() {
           clave: clave.value,
           telefono: telefono.value,
         });
+        showNotification("Vendedor Agregado", "positive");
       } else {
-        let id = idVendedor.value;
-        if (id) {
-          const datosVendedor = {
-            cedula: cedula.value,
-            nombre: nombre.value,
-            cuenta: cuenta.value,
-            telefono: telefono.value,
-          };
+        const id = idVendedor.value;
+        const datosVendedor = {
+          cedula: cedula.value,
+          nombre: nombre.value,
+          cuenta: cuenta.value,
+          telefono: telefono.value,
+        };
 
-          if (esAgregando.value || clave.value !== claveVisible.value) {
-            datosVendedor.clave = clave.value;
-            claveCambiada.value = true;
-          }
-
-          await VendedorStore.putVendedor(id, datosVendedor);
+        if (esAgregando.value || clave.value !== claveVisible.value) {
+          datosVendedor.clave = clave.value;
+          claveCambiada.value = true;
         }
+
+        await VendedorStore.putVendedor(id, datosVendedor);
+        showNotification("Vendedor Actualizado", "positive");
+        fixed.value = false;
       }
-      limpiar();
+
       obtenerInfo();
-      fixed.value = false;
     } catch (error) {
-      $q.notify({
-        type: 'negative',
-        color: 'negative',
-        message: error.response.data.error.errors[0].msg,
-        timeout: 6000
-      });
-      console.error(error);
+      showNotification(`${error.response?.data.error.errors[0].msg || "Error desconocido"}`, "negative");
     }
   }
 }
@@ -168,13 +172,23 @@ function limpiar() {
 }
 
 async function InactivarVendedor(id) {
-  await VendedorStore.putVendedorInactivar(id);
-  obtenerInfo();
+  try {
+    await VendedorStore.putVendedorInactivar(id);
+    obtenerInfo();
+    showNotification("Vendedor Inactivado exitosamente.", "negative");
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 async function ActivarVendedor(id) {
-  await VendedorStore.putVendedorActivar(id);
-  obtenerInfo();
+  try {
+    await VendedorStore.putVendedorActivar(id);
+    obtenerInfo();
+    showNotification("Vendedor Activado exitosamente.", "positive");
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 let errorMessage = ref("");
