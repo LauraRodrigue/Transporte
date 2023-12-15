@@ -5,14 +5,14 @@ import { ref } from 'vue';
 
 export const useVendedorStore = defineStore('vendedor', () => {
     const vendedores = ref([])
-    const getVendedor = async () => {
-        try {
-            let res = await axios.get(`/vendedor/vendedor`);
-            vendedores.value = res.data.vendedor;
-        } catch (error) {
+    const obtenerInfoVendedor = async () =>{
+        try{
+            let responseVendedor = await axios.get('vendedor/vendedor');
+            vendedores.value = responseVendedor.data.vendedor;
+        } catch (error){
             throw error
         }
-    }
+    };
     const postVendedor = async (data) =>{
         try {
             let res = await axios.post("vendedor/agregar", data);
@@ -50,6 +50,6 @@ export const useVendedorStore = defineStore('vendedor', () => {
 
     return {
         vendedores,
-        getVendedor, postVendedor, putVendedor, putVendedorInactivar, putVendedorActivar
+        obtenerInfoVendedor, postVendedor, putVendedor, putVendedorInactivar, putVendedorActivar
     };
 });
