@@ -1,5 +1,5 @@
 <template>
-    <div class="contenedor q-pa-md">
+    <div class="contenedor q-pa-md" style="margin-top: 100px;">
       <div class="row q-gutter-md justify-center items-center">
         <div
           class="menu col-xs-12 col-sm-6 col-md-2 col-lg-2 q-pa-sm q-mb-md"

@@ -76,6 +76,7 @@ let numero_bus = ref(null);
 let cantidad_asientos = ref("");
 let empresa_asignada = ref("");
 let conductor = ref("");
+let conductor_id = ref('')
 let cambio = ref(0);
 let notification = ref(null);
 let optionsConductores = ref([]);
@@ -91,7 +92,7 @@ async function obtenerConductores() {
   try {
     await conductorStore.obtenerInfoConductores();
     const conductoresActivos = conductorStore.conductores.filter(ruta => ruta.estado === true);
-    optionsConductores.value = conductoresActivo.map((conductor) => (
+    optionsConductores.value = conductoresActivos.map((conductor) => (
       {
         label: `${conductor.cedula} - ${conductor.nombre}`,
         value: String(conductor._id)
@@ -167,17 +168,24 @@ async function editarAgregarBus() {
       let id = idBus.value;
       if (id) {
         try {
+          console.log(conductor);
+          console.log('h');
           showNotification("Please wait...", "positive");
-          await busStore.putEditarBus(id, {
+          const res = await busStore.putEditarBus(id, {
             placa: placa.value,
             numero_bus: numero_bus.value,
             cantidad_asientos: cantidad_asientos.value,
             empresa_asignada: empresa_asignada.value,
-            conductor_id: conductor._rawValue.value,
+            conductor_id: conductor_id.value.value,
           });
-          limpiar();
+
+          console.log(res);
           showNotification("Bus Actualizado", "positive");
-          obtenerInfo();
+          // obtenerInfo();
+          const c = await conductorBuscar(res.data.bus.conductor_id)
+          rows.value.unshift({...res.data.bus, conductor_id:c})
+          limpiar();
+
           fixed.value = false;
         } catch (error) {
           showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
@@ -192,6 +200,20 @@ function limpiar() {
   numero_bus.value = null;
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
+  conductor_id.value = ''
+}
+
+
+async function conductorBuscar(id) {
+  const responseConductor = await axios.get(`/conductor/conductor/${id}`);
+  console.log(responseConductor);
+  const conductor = responseConductor.data.conductor;
+
+  if (conductor) {
+    return conductor
+  } else {
+    throw new Error("Conductor no encontrado");
+  }
 }
 
 
@@ -201,6 +223,7 @@ async function EditarBus(id) {
   cambio.value = 1;
   obtenerConductores();
   const busSeleccionado = buses.value.find((bus) => bus._id === id);
+  console.log(busSeleccionado);
   if (busSeleccionado) {
     idBus.value = String(busSeleccionado._id);
     fixed.value = true;
@@ -209,10 +232,12 @@ async function EditarBus(id) {
     numero_bus.value = busSeleccionado.numero_bus;
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
-    conductor_id.value = String(busSeleccionado.conductor_id);
+    console.log(conductor_id);
+    conductor_id.value = { label: busSeleccionado.conductor_id.cedula + ' - ' + busSeleccionado.conductor_id.nombre, value: busSeleccionado.conductor_id._id }
 
     try {
-      const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value}`);
+      const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value.value}`);
+      console.log(responseConductor);
       const conductor = responseConductor.data.conductor;
 
       if (conductor) {
