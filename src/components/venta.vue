@@ -30,7 +30,7 @@
                 </q-input> -->
               </div>
               <div class="options">
-                <q-btn label="Cerrar" color="amber" padding="sm" @click="cerrarModal" />
+                <q-btn label="Cerrar" color="amber" padding="sm" style="margin-right: 6px;" @click="cerrarModal" />
                 <q-btn label="Guardar" color="orange-10" padding="sm" @click="generarTicketInfo()" />
               </div>
             </div>
@@ -45,8 +45,7 @@
               <q-input lass="label" standout v-model="cedula" label="Cedula del Cliente" style="width: 300px" />
               <q-input lass="label" standout v-model="nombre" label="Nombre" style="width: 300px" />
               <q-input lass="label" standout v-model="telefono" label="Telefono" style="width: 300px" />
-              <q-btn class="btn-c" color="orange-10" label="Confirmar" @click="CrearTicket()" />
-              <q-btn class="btn-c" color="green" label="Nueva Venta " @click="nuevaVenta()" />
+              <q-btn class="btn-c" color="green" label="Confirmar" @click="CrearTicket()" />
             </div>
           </div>
         </div>
@@ -254,6 +253,7 @@ async function CrearTicket() {
       generarTicket();
       showGreat();
       generarListaAsientos()
+      limpiarDatos(); 
     } catch (error) {
       console.log(error);
       cancelShow();
@@ -382,6 +382,7 @@ function generarTicket() {
   doc.line(20, 153, 190, 153);
   doc.line(20, 154, 190, 154);
 
+
   doc.save(`ticket_${ticket.value._id}.pdf`);
 
 }
@@ -457,6 +458,16 @@ async function validar() {
   };
 };
 
+function limpiarDatos() {
+  // Limpiar datos del cliente
+  cedula.value = "";
+  nombre.value = "";
+  telefono.value = "";
+  cliente_id.value = "";
+
+  // Limpiar número de asiento
+  no_asiento.value = 0;
+}
 //Limite de fecha
 function getFechaActual() {
   const today = new Date();
