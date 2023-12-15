@@ -17,7 +17,7 @@
             @keydown.space.prevent />
           <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px"
             @keydown.space.prevent />
-          <q-select v-model="conductor_id" :options="optionsConductores" label="Conductores"
+          <q-select v-model="conductor_id" :options="optionsConductores" label="Conductor"
             style="width: 320px; margin-bottom:15px;" />
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -90,15 +90,16 @@ function showNotification(message, type) {
 async function obtenerConductores() {
   try {
     await conductorStore.obtenerInfoConductores();
-    optionsConductores.value = conductorStore.conductores.map((conductor) => (
-      {
-        label: `${conductor.cedula} - ${conductor.nombre}`,
-        value: String(conductor._id)
-      }));
+    const conductoresActivos = conductorStore.conductores.filter(conductor => conductor.estado === true);
+
+    optionsConductores.value = conductoresActivos.map((conductor) => ({
+      label: `${conductor.nombre} - ${conductor.cedula}`,
+      value: String(conductor._id),
+    }));
   } catch (error) {
     console.log(error);
-  }
-}
+  };
+};
 
 
 async function obtenerInfo() {
@@ -106,10 +107,12 @@ async function obtenerInfo() {
     await busStore.obtenerInfoBuses();
     buses.value = busStore.buses;
     rows.value = busStore.buses.reverse();
+    await obtenerConductores(); // Agregar esta línea para cargar opciones de conductores
   } catch (error) {
     console.log(error);
   }
 }
+
 
 onMounted(async () => {
   obtenerInfo();
@@ -121,6 +124,7 @@ const columns = [
   { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, align: "center" },
   { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", align: "center" },
   { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", align: "center" },
+  { name: "conductor_id", label: "Conductor", field: (row) => `${row.conductor_id.nombre} - ${row.conductor_id.cedula}` },
   { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center" },
   {
     name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center",
@@ -152,7 +156,7 @@ async function editarAgregarBus() {
           numero_bus: numero_bus.value,
           cantidad_asientos: cantidad_asientos.value,
           empresa_asignada: empresa_asignada.value,
-          conductor_id: conductor_id.value,
+          conductor_id: optionsConductores._rawValue.value,
         });
         limpiar();
         showNotification("Bus Agregado", "positive");
@@ -189,7 +193,9 @@ function limpiar() {
   numero_bus.value = null;
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
+  conductor_id.value = "";
 }
+
 
 let idBus = ref("");
 
@@ -204,22 +210,30 @@ async function EditarBus(id) {
     numero_bus.value = busSeleccionado.numero_bus;
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
-    conductor_id.value = String(busSeleccionado.conductor_id);
 
     try {
-      const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value}`);
-      const conductor = responseConductor.data.conductor;
+      await obtenerConductores();
+      const conductoresActivos = conductorStore.conductores.filter(conductor => conductor.estado === true);
 
-      if (conductor) {
-        conductor_id.label = `${conductor.nombre} ${conductor.apellido}`;
-      } else {
-        throw new Error("Conductor no encontrado");
-      }
+      optionsConductores.value = conductoresActivos.map((conductor) => ({
+        label: `${conductor.nombre} - ${conductor.cedula}`,
+        value: String(conductor._id),
+      }));
+
+      const conductorSeleccionado = conductoresActivos.find(c => c._id === busSeleccionado.conductor_id._id);
+      conductor_id.value = conductorSeleccionado ? String(conductorSeleccionado._id) : '';
+
+      console.log(optionsConductores);
     } catch (error) {
-      showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
+      console.log(error);
     }
   }
 }
+
+
+
+
+
 
 
 async function InactivarBus(id) {

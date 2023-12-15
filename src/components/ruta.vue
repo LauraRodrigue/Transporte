@@ -97,7 +97,9 @@ async function obtenerInfo() {
 async function obtenerHorarios() {
   try {
     await horarioStore.getHorario();
-    options.value = horarioStore.horarios.map((horario) => ({
+    const HorariosActivos = horarioStore.horarios.filter(horario => horario.estado === true);
+
+    options.value = HorariosActivos.map((horario) => ({
       label: `${horario.hora_partida} - ${horario.hora_llegada}`,
       value: String(horario._id),
     }));
