@@ -70,6 +70,7 @@ async function validar() {
         });
         console.log(res);
         localStorage.setItem('token', res.data.token)
+        localStorage.setItem('vendedor_id', res.data.vendedor._id)
         if(notification) {
             notification()
         }

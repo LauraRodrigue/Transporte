@@ -7,14 +7,27 @@
             <q-btn color="green" label="Generar Ticket" @click="mostrarModal" />
           </div>
           <!-- Modal -->
-          <div class="container-cuestionario"  align="center">
+          <div class="container-cuestionario" align="center">
             <div v-if="rutaBusFecha" class="container-rutaBusFecha">
               <div class="rutaBusFecha">
                 <q-select text-color="black" v-model="ruta" :options="optionsRutas" label="Rutas"
                   style="width: 320px; margin-bottom:15px;" />
                 <q-select v-model="bus" :options="optionsBuses" label="Buses" style="width: 320px; margin-bottom:15px;" />
                 <q-input v-model="fecha_departida" label="Fecha para Partida" filled type="date"
-                  style="width: 320px; margin-bottom:15px;" />
+                  style="width: 320px; margin-bottom:15px;" :options="opcionesFecha"/>
+                <!-- <q-input filled v-model="fecha_departida" mask="date" :rules="['date']">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="fecha_departida" :options="opcionesFecha">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input> -->
               </div>
               <div class="options">
                 <q-btn label="Cerrar" color="amber" padding="sm" @click="cerrarModal" />
@@ -24,8 +37,9 @@
           </div>
           <div class="busCliente">
             <div v-if="showClienteDiv" class="cliente" align="center">
-              <h4 v-if="no_asiento" class="asientoNumero" style="padding: 0;margin: 8px; margin-top: 30px; font-family: 'Kanit', sans-serif;">
-              Asiento N°{{ no_asiento }}</h4>
+              <h4 v-if="no_asiento" class="asientoNumero"
+                style="padding: 0;margin: 8px; margin-top: 30px; font-family: 'Kanit', sans-serif;">
+                Asiento N°{{ no_asiento }}</h4>
               <q-btn class="bnt-bc" color="amber" label="Agregar Cliente" @click="agregarCliente" />
               <q-btn class="bnt-bc" color="orange-10" label="Buscar Cliente" @click="buscarCliente()" />
               <q-input lass="label" standout v-model="cedula" label="Cedula del Cliente" style="width: 300px" />
@@ -36,16 +50,17 @@
             </div>
           </div>
         </div>
-          <div class="col-6" align="center" style="margin-top: 60px;">
-            <div class="row" v-if="asientos.length">
-              <div class="row" v-for="i in asientos" :key="i">
-                <q-btn padding="md" size="23px" class="btn" :value="i.numero" @click="!i.ocupado && (no_asiento = i.numero)" :style="{
+        <div class="col-6" align="center" style="margin-top: 60px;">
+          <div class="row" v-if="asientos.length">
+            <div class="row" v-for="i in asientos" :key="i">
+              <q-btn padding="md" size="23px" class="btn" :value="i.numero" @click="!i.ocupado && (no_asiento = i.numero)"
+                :style="{
                   backgroundColor: no_asiento === i.numero ? 'orange' : i.ocupado ? 'orange' : 'initial',
-                  cursor: i.ocupado ? 'not-allowed' : 'pointer', 
+                  cursor: i.ocupado ? 'not-allowed' : 'pointer',
                 }"> 💺{{ i.numero }}
-                </q-btn>
-              </div>
-            </div>    
+              </q-btn>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -64,7 +79,18 @@ import { useQuasar } from "quasar";
 import { jsPDF } from "jspdf";
 import { format } from "date-fns";
 
+function opcionesFecha(fecha) {
+  console.log(fecha);
+  const fechaA = fechaActual()
+  return fecha >= fechaA
+}
 
+function fechaActual() {
+  const fecha = new Date
+  const formatoFecha = `${fecha.getFullYear()}/${(fecha.getMonth() + 1).toString().padStart(2, '0')}/${fecha.getDate().toString().padStart(2, '0')}`
+
+  return formatoFecha
+}
 
 const $q = useQuasar();
 const busStore = useBusStore();
@@ -129,9 +155,9 @@ async function obtenerRutas() {
 
       const precioFormateado = !isNaN(precioNumber)
         ? precioNumber.toLocaleString("es-CO", {
-            style: "currency",
-            currency: "COP",
-          })
+          style: "currency",
+          currency: "COP",
+        })
         : ruta.precio;
 
       return {
@@ -208,25 +234,27 @@ async function generarTicketInfo() {
   fixed.value = false;
   generarListaAsientos();
 };
-
+const ticketRes = ref({})
 // Crear Ticket
 async function CrearTicket() {
   if (validacionCliente.value == true) {
     try {
       showDefault();
-      await ticketStore.postTicket({
-        vendedor_id: String(vendedor.value._id),
+      const r = await ticketStore.postTicket({
+        vendedor_id: localStorage.getItem('vendedor_id'),
         cliente_id: cliente_id.value,
         ruta_id: ruta._rawValue.value,
         bus_id: bus._rawValue.value,
         no_asiento: no_asiento.value,
         fecha_departida: fecha_departida.value,
       });
+      console.log(r);
+      ticketRes.value = r
       cancelShow();
       greatMessage.value = "Ticket Agregado";
       generarTicket();
       showGreat();
-      generarListaAsientos() 
+      generarListaAsientos()
     } catch (error) {
       console.log(error);
       cancelShow();
@@ -313,7 +341,8 @@ async function validarAsientos() {
 
 let ticket = ref([]);
 function generarTicket() {
-  ticket.value = ticketStore.ticketCreado;
+
+  ticket.value = ticketRes.value
   const doc = new jsPDF();
 
   const logoDataUri = 'https://static.vecteezy.com/system/resources/thumbnails/007/794/726/small/travel-bus-illustration-logo-on-light-background-free-vector.jpg';
@@ -497,7 +526,8 @@ function getFechaActual() {
   margin-top: 6px;
   margin-right: 6px;
 }
-.btn{
+
+.btn {
   width: 90px;
   height: 80px;
   padding: 2px;
@@ -508,5 +538,4 @@ function getFechaActual() {
   border-radius: 5px;
   border: solid gray 1px;
   margin: 8px;
-}
-</style>
+}</style>

@@ -7,9 +7,9 @@ export const useTicketStore = defineStore('ticket', () => {
   const postTicket = async (data) => {
     try {
       let res = await axios.post("/ticket/agregar", data);
-      ticketCreado.value = res.data.ticket
-      console.log(ticketCreado.value);
-      return res;
+      // ticketCreado.value = res.data.ticket
+      // console.log(ticketCreado.value);
+      return res.data;
     } catch (error) {
       throw error;
     }
