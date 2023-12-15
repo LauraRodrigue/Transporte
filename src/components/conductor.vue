@@ -11,10 +11,10 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh">
-          <q-input type="number" v-model="cedula" label="Cedula" style="width: 300px" @keydown.space.prevent />          
-          <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" @keydown.space.prevent />
+          <q-input type="number" v-model="cedula" label="Cedula" style="width: 300px"  />          
+          <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px"  />
           <q-input type="number" v-model="experiencia" label="Experiencia" style="width: 300px" @keypress="validarTecla" />
-          <q-input type="number" v-model="telefono" label="Telefono" style="width: 300px" @keydown.space.prevent  />
+          <q-input type="number" v-model="telefono" label="Telefono" style="width: 300px"   />
 
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -139,11 +139,11 @@ async function editarAgregarConductor() {
       try {
         showNotification("Please wait...", "positive");
         await conductorStore.postConductor({
-          cedula: cedula.value,
-          nombre: nombre.value,
-          id_bus: bus.value,
-          experiencia: experiencia.value,
-          telefono: telefono.value
+          cedula: cedula.value.trim(),
+          nombre: nombre.value.trim(),
+          id_bus: bus.value.trim(),
+          experiencia: experiencia.value.trim(),
+          telefono: telefono.value.trim()
         });
         limpiar();
         showNotification("Conductor Agregado", "positive");
@@ -157,11 +157,11 @@ async function editarAgregarConductor() {
         try {
           showNotification("Please wait...", "positive");
           await conductorStore.putEditarConductor(id, {
-            cedula: cedula.value,
-            nombre: nombre.value,
-            id_bus: bus.value,
-            experiencia: experiencia.value,
-            telefono: telefono.value
+            cedula: cedula.value.trim(),
+            nombre: nombre.value.trim(),
+            id_bus: bus.value.trim(),
+            experiencia: experiencia.value.trim(),
+            telefono: telefono.value.trim()
           });
           limpiar();
           showNotification("Conductor Actualizado", "positive");
@@ -193,11 +193,11 @@ async function EditarConductor(id) {
     idConductor.value = String(conductorSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Conductor";
-    cedula.value = conductorSeleccionado.cedula;
-    nombre.value = conductorSeleccionado.nombre;
-    bus.value = conductorSeleccionado.id_bus;
-    experiencia.value = conductorSeleccionado.experiencia;
-    telefono.value = conductorSeleccionado.telefono;
+    cedula.value = conductorSeleccionado.cedula.trim();
+    nombre.value = conductorSeleccionado.nombre.trim();
+    bus.value = conductorSeleccionado.id_bus.trim();
+    experiencia.value = conductorSeleccionado.experiencia.trim();
+    telefono.value = conductorSeleccionado.telefono.trim();
   }
 }
 

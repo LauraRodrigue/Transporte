@@ -11,12 +11,12 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input type="text" v-model="placa" label="Placa" style="width: 300px" @keydown.space.prevent />
-          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="placa" label="Placa" style="width: 300px"  />
+          <q-input type="number" v-model="numero_bus" label="Número de Bus" style="width: 300px"  />
           <q-input type="text" v-model="cantidad_asientos" label="Cantidad de Asientos" style="width: 300px"
-            @keydown.space.prevent />
+             />
           <q-input type="text" v-model="empresa_asignada" label="Empresa Asignada" style="width: 300px"
-            @keydown.space.prevent />
+             />
           <q-select v-model="conductor_id" :options="optionsConductores" label="Conductor"
             style="width: 320px; margin-bottom:15px;" />
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
@@ -105,6 +105,8 @@ async function obtenerConductores() {
 };
 
 
+
+
 async function obtenerInfo() {
   try {
     loading.value = true; 
@@ -164,11 +166,11 @@ async function editarAgregarBus() {
           throw new Error("Conductor no encontrado");
         }
         await busStore.postBus({
-          placa: placa.value,
-          numero_bus: numero_bus.value,
-          cantidad_asientos: cantidad_asientos.value,
-          empresa_asignada: empresa_asignada.value,
-          conductor_id: conductor_id.value,
+          placa: placa.value.trim(),
+          numero_bus: numero_bus.value.trim(),
+          cantidad_asientos: cantidad_asientos.value.trim(),
+          empresa_asignada: empresa_asignada.value.trim(),
+          conductor_id: conductor_id.value.trim(),
         });
         limpiar();
         showNotification("Bus Agregado", "positive");

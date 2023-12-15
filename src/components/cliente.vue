@@ -10,9 +10,9 @@
         <q-separator />
 
         <q-card-section style="max-height: 60vh;" @submit.prevent="validar">
-          <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" @keydown.space.prevent/>
-          <q-input  type="text" v-model="nombre" label="Nombre" style="width: 380px"  @keydown.space.prevent/>
-          <q-input  type="number" v-model="telefono" label="Telefono" style="width: 380px"  @keydown.space.prevent/>
+          <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" />
+          <q-input  type="text" v-model="nombre" label="Nombre" style="width: 380px"  />
+          <q-input  type="number" v-model="telefono" label="Telefono" style="width: 380px"  />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -122,9 +122,9 @@ async function agregarEditarCliente() {
       try {
         showNotification("Please wait...", "positive");
         await ClienteStore.postCliente({
-          cedula: cedula.value,
-          nombre: nombre.value,
-          telefono: telefono.value,
+          cedula: cedula.value.trim(),
+          nombre: nombre.value.trim(),
+          telefono: telefono.value.trim(),
         });
         limpiar();
         showNotification("Cliente Agregado", "positive");
@@ -138,9 +138,9 @@ async function agregarEditarCliente() {
         try {
           showNotification("Please wait...", "positive");
           await ClienteStore.putCliente(id, {
-            cedula: cedula.value,
-            nombre: nombre.value,
-            telefono: telefono.value,
+            cedula: cedula.value.trim(),
+            nombre: nombre.value.trim(),
+            telefono: telefono.value.trim(),
           });
           limpiar();
           showNotification("Cliente Actualizado", "positive");
@@ -167,9 +167,9 @@ function EditarCliente(id) {
     idCliente.value = String(clienteSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Cliente";
-    cedula.value = clienteSeleccionado.cedula;
-    nombre.value = clienteSeleccionado.nombre;
-    telefono.value = clienteSeleccionado.telefono;
+    cedula.value = clienteSeleccionado.cedula.trim();
+    nombre.value = clienteSeleccionado.nombre.trim();
+    telefono.value = clienteSeleccionado.telefono.trim();
     // Restablecer el mensaje de error al editar
     errorMessage.value = "";
     // Restablecer la validación al editar
@@ -213,7 +213,7 @@ async function validar() {
     errorMessage.value = "* Ingrese el nombre";
   } else if (!telefono.value) {
     errorMessage.value = "* Ingrese el teléfono";
-  } else if (telefono.value.length >=10) {
+  } else if (telefono.value.length ===11) {
     errorMessage.value = "* El teléfono debe tener 10 dígitos";
   }
 

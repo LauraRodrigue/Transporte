@@ -10,8 +10,8 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input v-model="hora_partida" label="Hora_partida" style="width: 380px;" @keydown.space.prevent />
-          <q-input v-model="hora_llegada" label="Hora_llegada" style="width: 380px;"  @keydown.space.prevent />
+          <q-input v-model="hora_partida" label="Hora_partida" style="width: 380px;"  />
+          <q-input v-model="hora_llegada" label="Hora_llegada" style="width: 380px;"   />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
 
@@ -135,8 +135,8 @@ async function agregarEditarHorario() {
       try {
         showNotification("Please wait...", "positive");
         await HorarioStore.postHorario({
-          hora_partida: hora_partida.value,
-          hora_llegada: hora_llegada.value,
+          hora_partida: hora_partida.value.trim(),
+          hora_llegada: hora_llegada.value.trim(),
         });
         limpiar();
         showNotification("Horario Agregado", "positive");
@@ -150,8 +150,8 @@ async function agregarEditarHorario() {
         try {
           showNotification("Please wait...", "positive");
           await HorarioStore.putHorario(id, {
-            hora_partida: hora_partida.value,
-            hora_llegada: hora_llegada.value,
+            hora_partida: hora_partida.value.trim(),
+            hora_llegada: hora_llegada.value.trim(),
           });
           limpiar();
           showNotification("Horario Actualizado", "positive");
@@ -179,8 +179,8 @@ async function EditarHorario(id) {
     idHorario.value = String(HorSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Horario";
-    hora_partida.value = HorSeleccionado.hora_partida;
-    hora_llegada.value = HorSeleccionado.hora_llegada;
+    hora_partida.value = HorSeleccionado.hora_partida.trim();
+    hora_llegada.value = HorSeleccionado.hora_llegada.trim();
 
     errorMessage.value = "";
     validacion.value = true;

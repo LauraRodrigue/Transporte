@@ -10,11 +10,11 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh;" @submit.prevent="validar">
-          <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" @keydown.space.prevent />
-          <q-input v-model="nombre" label="Nombre" style="width: 380px" @keydown.space.prevent />
-          <q-input v-model="cuenta" label="Cuenta" style="width: 380px" @keydown.space.prevent />
-          <q-input type="number" v-model="telefono" label="Telefono" style="width: 380px" @keydown.space.prevent />
-          <q-input v-if="esAgregando" v-model="clave" label="Clave" style="width: 380px" @keydown.space.prevent />
+          <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px"  />
+          <q-input v-model="nombre" label="Nombre" style="width: 380px"  />
+          <q-input v-model="cuenta" label="Cuenta" style="width: 380px"  />
+          <q-input type="number" v-model="telefono" label="Telefono" style="width: 380px"  />
+          <q-input v-if="esAgregando" v-model="clave" label="Clave" style="width: 380px"  />
 
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -116,11 +116,11 @@ async function EditarVendedor(id) {
     idVendedor.value = String(vendedorSeleccionado._id);
     fixed.value = true;
     text.value = "Editar Vendedor";
-    cedula.value = vendedorSeleccionado.cedula;
-    nombre.value = vendedorSeleccionado.nombre;
-    cuenta.value = vendedorSeleccionado.cuenta;
-    telefono.value = vendedorSeleccionado.telefono;
-    clave.value = vendedorSeleccionado.clave;  
+    cedula.value = vendedorSeleccionado.cedula.trim();
+    nombre.value = vendedorSeleccionado.nombre.trim();
+    cuenta.value = vendedorSeleccionado.cuenta.trim();
+    telefono.value = vendedorSeleccionado.telefono.trim();
+    clave.value = vendedorSeleccionado.clave.trim();  
   }
 }
 
@@ -132,20 +132,20 @@ async function agregarEditarVendedor() {
 
       if (cambio.value === 0) {
         await VendedorStore.postVendedor({
-          cedula: cedula.value,
-          nombre: nombre.value,
-          cuenta: cuenta.value,
-          clave: clave.value,
-          telefono: telefono.value,
+          cedula: cedula.value.trim(),
+          nombre: nombre.value.trim(),
+          cuenta: cuenta.value.trim(),
+          clave: clave.value.trim(),
+          telefono: telefono.value.trim(),
         });
         showNotification("Vendedor Agregado", "positive");
       } else {
         const id = idVendedor.value;
         const datosVendedor = {
-          cedula: cedula.value,
-          nombre: nombre.value,
-          cuenta: cuenta.value,
-          telefono: telefono.value,
+          cedula: cedula.value.trim(),
+          nombre: nombre.value.trim(),
+          cuenta: cuenta.value.trim(),
+          telefono: telefono.value.trim(),
         };
 
         if (esAgregando.value || clave.value !== claveVisible.value) {

@@ -17,8 +17,8 @@
               <q-select v-model="horario" :options="options" label="Horario" />
             </div>
           </div>
-          <q-input type="text" v-model="origen" label="Origen" style="width: 300px" @keydown.space.prevent />
-          <q-input type="text" v-model="destino" label="Destino" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="origen" label="Origen" style="width: 300px"  />
+          <q-input type="text" v-model="destino" label="Destino" style="width: 300px"  />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -162,10 +162,10 @@ async function editarAgregarRuta() {
       try {
         showNotification("Please wait...", "positive");
         await rutaStore.postRuta({
-          precio: precio.value,
-          horario_id: horario._rawValue.value,
-          origen: origen.value,
-          destino: destino.value,
+          precio: precio.value.trim(),
+          horario_id: horario._rawValue.value.trim(),
+          origen: origen.value.trim(),
+          destino: destino.value.trim(),
         });
         limpiar();
         showNotification("Ruta Agregada", "positive");
@@ -179,10 +179,10 @@ async function editarAgregarRuta() {
         try {
           showNotification("Please wait...", "positive");
           await rutaStore.putEditarRuta(id, {
-            precio: precio.value,
-            horario_id: horario._rawValue.value,
-            origen: origen.value,
-            destino: destino.value,
+            precio: precio.value.trim(),
+            horario_id: horario._rawValue.value.trim(),
+            origen: origen.value.trim(),
+            destino: destino.value.trim(),
           });
           limpiar();
           showNotification("Ruta Actualizada", "positive");
@@ -214,13 +214,13 @@ async function EditarRuta(id) {
     idRuta.value = String(rutaSelected._id);
     fixed.value = true;
     text.value = "Editar Ruta";
-    precio.value = rutaSelected.precio;
+    precio.value = rutaSelected.precio.trim();
     horario.value = {
       label: `${rutaSelected.horario_id.hora_partida} - ${rutaSelected.horario_id.hora_llegada}`,
-      value: String(rutaSelected.horario_id._id),
+      value: String(rutaSelected.horario_id._id).trim(),
     };
-    origen.value = rutaSelected.origen;
-    destino.value = rutaSelected.destino;
+    origen.value = rutaSelected.origen.trim();
+    destino.value = rutaSelected.destino.trim();
   }
 }
 
