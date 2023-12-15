@@ -10,9 +10,9 @@
         <q-separator />
 
         <q-card-section style="max-height: 60vh;" @submit.prevent="validar">
-          <q-input v-model="cedula" label="Cédula" style="width: 380px" />
-          <q-input v-model="nombre" label="Nombre" style="width: 380px" />
-          <q-input v-model="telefono" label="Telefono" style="width: 380px" />
+          <q-input type="number" v-model="cedula" label="Cédula" style="width: 380px" @keydown.space.prevent/>
+          <q-input  type="text" v-model="nombre" label="Nombre" style="width: 380px"  @keydown.space.prevent/>
+          <q-input  type="number" v-model="telefono" label="Telefono" style="width: 380px"  @keydown.space.prevent/>
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -27,7 +27,7 @@
     </q-dialog>
     <div align="center">
       <h2 align="center">Clientes</h2>
-      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%; text-align: left;">
+      <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%; text-align: right;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
@@ -78,7 +78,7 @@ function showNotification(message, type) {
 
 async function obtenerInfo() {
   try {
-    await ClienteStore.getCliente();
+    await ClienteStore.obtenerInfoClientes();
     clientes.value = ClienteStore.clientes;
     rows.value = ClienteStore.clientes.reverse();
   } catch (error) {
@@ -91,11 +91,11 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "center" },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "center" },
-  { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center", format: (val) => (val ? "Activo" : "Inactivo") },
-  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center", format: (val) => format(new Date(val), "yyyy-MM-dd") },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "left" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "left" },
+  { name: "telefono", label: "Telefono", field: "telefono", align: "left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "left", format: (val) => (val ? "Activo" : "Inactivo") },
+  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left", format: (val) => format(new Date(val), "yyyy-MM-dd") },
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
 ];
 
@@ -208,7 +208,7 @@ async function validar() {
     errorMessage.value = "* Ingrese el nombre";
   } else if (!telefono.value) {
     errorMessage.value = "* Ingrese el teléfono";
-  } else if (telefono.value.length !== 10) {
+  } else if (telefono.value.length >=10) {
     errorMessage.value = "* El teléfono debe tener 10 dígitos";
   }
 

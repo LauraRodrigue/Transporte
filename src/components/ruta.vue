@@ -11,14 +11,14 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input  type="number"  v-model="precio"  label="Precio"  style="width: 300px"/>
+          <q-input type="number" v-model="precio" label="Precio" style="width: 300px" />
           <div class="q-pa" style="width: 300px">
             <div class="q-gutter">
               <q-select v-model="horario" :options="options" label="Horario" />
             </div>
           </div>
-          <q-input  type="text"  v-model="origen"  label="Origen"  style="width: 300px" @keydown.space.prevent/>
-          <q-input  type="text"  v-model="destino"  label="Destino"  style="width: 300px" @keydown.space.prevent/>
+          <q-input type="text" v-model="origen" label="Origen" style="width: 300px" @keydown.space.prevent />
+          <q-input type="text" v-model="destino" label="Destino" style="width: 300px" @keydown.space.prevent />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
@@ -26,7 +26,7 @@
 
         <q-card-actions align="right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
-          <q-btn label="Guardar"  color="green"  @click="editarAgregarRuta()"/>
+          <q-btn label="Guardar" color="green" @click="editarAgregarRuta()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -38,15 +38,16 @@
       <q-table :rows="rows" :columns="columns" row-key="name" style="width:90%">
         <template v-slot:body-cell-estado="props">
           <q-td :props="props">
-            <label for="" v-if="props.row.estado == 1" style="color: green"  >Activo</label>
+            <label for="" v-if="props.row.estado == 1" style="color: green">Activo</label>
             <label for="" v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
         <template v-slot:body-cell-opciones="props">
           <q-td :props="props" class="botones">
-            <q-btn  color="orange-14"  text-color="white"  icon="🖋️"  @click="EditarRuta(props.row._id)"/>
-            <q-btn  color="amber"  text-color="white"  icon="❌"  @click="InactivarRuta(props.row._id)"  v-if="props.row.estado == 1"/>
-            <q-btn  color="amber"  text-color="white"  icon="✔️"  @click="ActivarRuta(props.row._id)"  v-else/>
+            <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarRuta(props.row._id)" />
+            <q-btn color="amber" text-color="white" icon="❌" @click="InactivarRuta(props.row._id)"
+              v-if="props.row.estado == 1" />
+            <q-btn color="amber" text-color="white" icon="✔️" @click="ActivarRuta(props.row._id)" v-else />
           </q-td>
         </template>
       </q-table>
@@ -54,7 +55,7 @@
   </div>
 </template>
     
-  <script setup>
+<script setup>
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { useHorarioStore } from "../stores/horario.js";
@@ -114,31 +115,31 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "precio", label: "Precio", field: "precio", sortable: true,align:"center" },
+  { name: "precio", label: "Precio", field: "precio", sortable: true, align: "left" },
   {
     name: "hora_partida",
     label: "Hora Partida",
     field: (row) => row.horario_id.hora_partida,
-    align:"center"
+    align: "left"
   },
   {
     name: "hora_llegada",
     label: "Hora LLegada",
     field: (row) => row.horario_id.hora_llegada,
-    align:"center"
+    align: "left"
   },
-  { name: "origen", label: "Origen", field: "origen",align:"center"},
-  { name: "destino", label: "Destino", field: "destino",align:"center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center" },
+  { name: "origen", label: "Origen", field: "origen", align: "left" },
+  { name: "destino", label: "Destino", field: "destino", align: "left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "left" },
   {
     name: "createAT",
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
-    align:"center",
+    align: "left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
-  { name: "opciones", label: "Opciones", sortable: false,align:"center"},
+  { name: "opciones", label: "Opciones", sortable: false, align: "center" },
 ];
 
 function agregarRuta() {
@@ -185,7 +186,7 @@ async function editarAgregarRuta() {
         } catch (error) {
           showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
         }
-        
+
       }
     }
     validacion.value = false
@@ -254,7 +255,7 @@ async function ActivarRuta(id) {
 
 let validacion = ref(true)
 
-let errorMessage = ref(""); 
+let errorMessage = ref("");
 
 async function validar() {
 
@@ -268,7 +269,7 @@ async function validar() {
     errorMessage.value = "* Eliga un Horario";
   } else if (!origen.value) {
     errorMessage.value = "* Digite el Origen";
-  }else if(!destino.value){
+  } else if (!destino.value) {
     errorMessage.value = "* Digite el Destino"
   }
 

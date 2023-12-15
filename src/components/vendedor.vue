@@ -81,12 +81,12 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "center" },
-  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "center" },
-  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true, align: "center" },
-  { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center", format: (val) => (val ? "Activo" : "Inactivo") },
-  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center", format: (val) => format(new Date(val), "yyyy-MM-dd") },
+  { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "left" },
+  { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "left" },
+  { name: "cuenta", label: "Cuenta", field: "cuenta", sortable: true, align: "left" },
+  { name: "telefono", label: "Telefono", field: "telefono", align: "left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "left", format: (val) => (val ? "Activo" : "Inactivo") },
+  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left", format: (val) => format(new Date(val), "yyyy-MM-dd") },
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
 ];
 

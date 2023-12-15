@@ -13,14 +13,14 @@
         <q-card-section style="max-height: 50vh">
           <q-input type="number" v-model="cedula" label="Cedula" style="width: 300px" @keydown.space.prevent />          
           <q-input type="text" v-model="nombre" label="Nombre" style="width: 300px" @keydown.space.prevent />
-          <q-input type="text" v-model="experiencia" label="Experiencia" style="width: 300px" @keydown.space.prevent />
+          <q-input type="number" v-model="experiencia" label="Experiencia" style="width: 300px" @keypress="validarTecla" />
           <q-input type="number" v-model="telefono" label="Telefono" style="width: 300px" @keydown.space.prevent  />
 
           <div v-if="errorMessage" style="color: red; font-size: medium; font-weight: 600;">{{ errorMessage }}</div>
         </q-card-section>
         <q-separator />
 
-        <q-card-actions align="right"> 
+        <q-card-actions align= "right"> 
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="editarAgregarConductor" />
         </q-card-actions>
@@ -39,7 +39,7 @@
             <label v-else style="color: red">Inactivo</label>
           </q-td>
         </template>
-        <template v-slot:body-cell-opciones="props">
+        <template v-slot:body-cell-opciones="props" >
           <q-td :props="props" class="botones">
             <q-btn color="orange-14" text-color="white" icon="🖋️" @click="EditarConductor(props.row._id)" />
             <q-btn color="amber" text-color="white" icon="❌" @click="InactivarConductor(props.row._id)" v-if="props.row.estado == 1" />
@@ -113,9 +113,9 @@ const columns = [
   { name: "cedula", label: "Cedula", field: "cedula", sortable: true, align: "left" },
   { name: "nombre", label: "Nombre", field: "nombre", sortable: true, align: "left" },
   { name: "experiencia", label: "Experiencia", field: "experiencia", align: "center" },
-  { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center" },
-  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center", format: (val) => format(new Date(val), "yyyy-MM-dd") },
+  { name: "telefono", label: "Telefono", field: "telefono", align: "left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "left" },
+  { name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left", format: (val) => format(new Date(val), "yyyy-MM-dd") },
   { name: "opciones", label: "Opciones", sortable: false, align: "center" },
 ];
 
@@ -213,6 +213,27 @@ async function ActivarConductor(id) {
     showNotification("Conductor Activado exitosamente.", "positive");
   } catch (error) {
     handleError(error);
+  }
+}
+
+function validarTecla(event) {
+  // Obtener el código de la tecla presionada
+  const keyCode = event.keyCode;
+
+  // Permitir teclas de navegación y números positivos
+  if (
+    (keyCode >= 48 && keyCode <= 57) || // Números del teclado principal
+    (keyCode >= 96 && keyCode <= 105) || // Números del teclado numérico
+    keyCode === 8 || // Retroceso
+    keyCode === 9 || // Tabulador
+    keyCode === 13 || // Enter
+    keyCode === 37 || // Flecha izquierda
+    keyCode === 39 // Flecha derecha
+  ) {
+    // No hacer nada si la tecla es permitida
+  } else {
+    // Prevenir la entrada de otras teclas, incluyendo el signo negativo
+    event.preventDefault();
   }
 }
 

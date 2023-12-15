@@ -75,7 +75,7 @@ let placa = ref("");
 let numero_bus = ref(null);
 let cantidad_asientos = ref("");
 let empresa_asignada = ref("");
-let conductor_id = ref("");
+let conductor = ref("");
 let cambio = ref(0);
 let notification = ref(null);
 let optionsConductores = ref([]);
@@ -90,12 +90,12 @@ function showNotification(message, type) {
 async function obtenerConductores() {
   try {
     await conductorStore.obtenerInfoConductores();
-    const conductoresActivos = conductorStore.conductores.filter(conductor => conductor.estado === true);
-
-    optionsConductores.value = conductoresActivos.map((conductor) => ({
-      label: `${conductor.nombre} - ${conductor.cedula}`,
-      value: String(conductor._id),
-    }));
+    const conductoresActivos = conductorStore.conductores.filter(ruta => ruta.estado === true);
+    optionsConductores.value = conductoresActivo.map((conductor) => (
+      {
+        label: `${conductor.cedula} - ${conductor.nombre}`,
+        value: String(conductor._id)
+      }));
   } catch (error) {
     console.log(error);
   };
@@ -120,14 +120,13 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "placa", label: "Placa", field: "placa", sortable: true, align: "center" },
+  { name: "placa", label: "Placa", field: "placa", sortable: true, align: "left" },
   { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, align: "center" },
   { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", align: "center" },
   { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", align: "center" },
-  { name: "conductor_id", label: "Conductor", field: (row) => `${row.conductor_id.nombre} - ${row.conductor_id.cedula}` },
   { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center" },
   {
-    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center",
+    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
@@ -147,8 +146,8 @@ async function editarAgregarBus() {
     if (cambio.value === 0) {
       try {
         showNotification("Please wait...", "positive");
-        const conductor = await conductorStore.obtenerConductorPorId(conductor_id.value);
-        if (!conductor) {
+        const conductores = await conductorStore.obtenerConductorPorId(conductor.value);
+        if (!conductores) {
           throw new Error("Conductor no encontrado");
         }
         await busStore.postBus({
@@ -156,7 +155,7 @@ async function editarAgregarBus() {
           numero_bus: numero_bus.value,
           cantidad_asientos: cantidad_asientos.value,
           empresa_asignada: empresa_asignada.value,
-          conductor_id: optionsConductores._rawValue.value,
+          conductor_id: conductor_id.value,
         });
         limpiar();
         showNotification("Bus Agregado", "positive");
@@ -174,7 +173,7 @@ async function editarAgregarBus() {
             numero_bus: numero_bus.value,
             cantidad_asientos: cantidad_asientos.value,
             empresa_asignada: empresa_asignada.value,
-            conductor_id: conductor_id.value,
+            conductor_id: conductor._rawValue.value,
           });
           limpiar();
           showNotification("Bus Actualizado", "positive");
@@ -193,7 +192,6 @@ function limpiar() {
   numero_bus.value = null;
   cantidad_asientos.value = "";
   empresa_asignada.value = "";
-  conductor_id.value = "";
 }
 
 
@@ -201,6 +199,7 @@ let idBus = ref("");
 
 async function EditarBus(id) {
   cambio.value = 1;
+  obtenerConductores();
   const busSeleccionado = buses.value.find((bus) => bus._id === id);
   if (busSeleccionado) {
     idBus.value = String(busSeleccionado._id);
@@ -210,30 +209,22 @@ async function EditarBus(id) {
     numero_bus.value = busSeleccionado.numero_bus;
     cantidad_asientos.value = busSeleccionado.cantidad_asientos;
     empresa_asignada.value = busSeleccionado.empresa_asignada;
+    conductor_id.value = String(busSeleccionado.conductor_id);
 
     try {
-      await obtenerConductores();
-      const conductoresActivos = conductorStore.conductores.filter(conductor => conductor.estado === true);
+      const responseConductor = await axios.get(`/conductor/conductor/${conductor_id.value}`);
+      const conductor = responseConductor.data.conductor;
 
-      optionsConductores.value = conductoresActivos.map((conductor) => ({
-        label: `${conductor.nombre} - ${conductor.cedula}`,
-        value: String(conductor._id),
-      }));
-
-      const conductorSeleccionado = conductoresActivos.find(c => c._id === busSeleccionado.conductor_id._id);
-      conductor_id.value = conductorSeleccionado ? String(conductorSeleccionado._id) : '';
-
-      console.log(optionsConductores);
+      if (conductor) {
+        conductor_id.label = `${conductor.nombre} ${conductor.apellido}`;
+      } else {
+        throw new Error("Conductor no encontrado");
+      }
     } catch (error) {
-      console.log(error);
+      showNotification(`${error.response.data.error.errors[0].msg}`, "negative");
     }
   }
 }
-
-
-
-
-
 
 
 async function InactivarBus(id) {
