@@ -29,6 +29,7 @@
 
     <div align="center">
       <h2>Conductores</h2>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar " @click="agregarConductor" />
       </div>
@@ -74,6 +75,7 @@ let experiencia = ref("");
 let telefono = ref("");
 let cambio = ref(0);
 let notification = ref(null);
+let loading = ref(false);
 
 function showNotification(message, type) {
   notification.value = $q.notify({
@@ -84,11 +86,14 @@ function showNotification(message, type) {
 
 async function obtenerInfo() {
   try {
+    loading.value = true; 
     await conductorStore.obtenerInfoConductores();
     conductores.value = conductorStore.conductores;
     rows.value = conductorStore.conductores.reverse();
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   }
 }
 

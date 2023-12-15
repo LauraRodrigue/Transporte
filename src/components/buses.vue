@@ -32,6 +32,7 @@
     </q-dialog>
     <div align="center">
       <h3>Buses</h3>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar" @click="agregarBus" />
       </div>
@@ -80,6 +81,7 @@ let conductor_id = ref('')
 let cambio = ref(0);
 let notification = ref(null);
 let optionsConductores = ref([]);
+let loading = ref(false);
 
 function showNotification(message, type) {
   notification.value = $q.notify({
@@ -105,12 +107,15 @@ async function obtenerConductores() {
 
 async function obtenerInfo() {
   try {
+    loading.value = true; 
     await busStore.obtenerInfoBuses();
     buses.value = busStore.buses;
     rows.value = busStore.buses.reverse();
     await obtenerConductores(); // Agregar esta línea para cargar opciones de conductores
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   }
 }
 
@@ -125,7 +130,14 @@ const columns = [
   { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, align: "center" },
   { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", align: "center" },
   { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", align: "center" },
+  {
+    name: "conductor_id",
+    label: "Conductor",
+    field: (row) => `${row.conductor_id.cedula} - ${row.conductor_id.nombre}`,
+    align: "left"
+  },
   { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center" },
+
   {
     name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),

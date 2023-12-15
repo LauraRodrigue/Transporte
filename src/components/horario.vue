@@ -27,6 +27,7 @@
     </q-dialog>
     <div align="center">
       <h2>Horario</h2>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar" @click="agregarHorario()" />
       </div>
@@ -73,6 +74,7 @@ let hora_partida = ref('');
 let hora_llegada = ref();
 let cambio = ref(0);
 let notification = ref(null);
+let loading = ref(false);
 
 
 function showNotification(message, type) {
@@ -84,11 +86,14 @@ function showNotification(message, type) {
 
 async function obtenerInfo() {
   try {
+    loading.value = true; 
     await HorarioStore.getHorario();
     horarios.value = HorarioStore.horarios;
     rows.value = HorarioStore.horarios.reverse();
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   }
 }
 

@@ -27,6 +27,7 @@
     </q-dialog>
     <div align="center">
       <h2 align="center">Clientes</h2>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%; text-align: right;">
         <q-btn color="green" label="Agregar" @click="agregarCliente()" />
       </div>
@@ -67,6 +68,7 @@ let nombre = ref("");
 let telefono = ref("");
 let cambio = ref(0);
 let idCliente = ref("");
+let loading = ref(false);
 
 
 function showNotification(message, type) {
@@ -78,11 +80,14 @@ function showNotification(message, type) {
 
 async function obtenerInfo() {
   try {
+    loading.value = true; 
     await ClienteStore.obtenerInfoClientes();
     clientes.value = ClienteStore.clientes;
     rows.value = ClienteStore.clientes.reverse();
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   }
 }
 
