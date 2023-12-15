@@ -6,16 +6,9 @@ export const useTicketStore = defineStore('ticket', () => {
   const ticket = ref([])
   const postTicket = async (data) => {
     try {
-      // console.log(token); 
-
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`
-      //   }
-      // };
-      // console.log(config);
-
       let res = await axios.post("/ticket/agregar", data);
+      ticketCreado.value = res.data.ticket
+      console.log(ticketCreado.value);
       return res;
     } catch (error) {
       throw error;
@@ -58,7 +51,7 @@ export const useTicketStore = defineStore('ticket', () => {
       throw error
     }
   };
-  const puestos = ref([])
+  const puestos = ref([]);
   const buscarTickets = async (id_ruta, id_bus, fecha) => {
     try {
       let res = await axios.get(`/ticket/encontrartickets?id_ruta=${id_ruta}&id_bus=${id_bus}&fecha=${fecha}`)
