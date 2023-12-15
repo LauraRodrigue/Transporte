@@ -239,6 +239,7 @@ const ticketRes = ref({})
 async function CrearTicket() {
   if (validacionCliente.value == true) {
     try {
+      console.log(ruta);
       showDefault();
       const r = await ticketStore.postTicket({
         vendedor_id: localStorage.getItem('vendedor_id'),
@@ -249,7 +250,7 @@ async function CrearTicket() {
         fecha_departida: fecha_departida.value,
       });
       console.log(r);
-      ticketRes.value = r
+      ticketRes.value = r.ticket
       cancelShow();
       greatMessage.value = "Ticket Agregado";
       generarTicket();
@@ -340,19 +341,16 @@ async function validarAsientos() {
 
 
 let ticket = ref([]);
+
 function generarTicket() {
 
   ticket.value = ticketRes.value
   const doc = new jsPDF();
 
-  const logoDataUri = 'https://static.vecteezy.com/system/resources/thumbnails/007/794/726/small/travel-bus-illustration-logo-on-light-background-free-vector.jpg';
-  doc.addImage(logoDataUri, 'PNG', 120, 0, 80, 80);
-
-
   // Título
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(25);
-  doc.setTextColor(0, 105, 217);
+  doc.setTextColor(255, 0, 0);
   doc.text(`TransporteSA`, 18, 19);
 
   // Títulos
@@ -414,9 +412,9 @@ function generarTicket() {
 
 
   doc.setFont('Helvetica', 'bold');
-  doc.setFontSize(25);
-  doc.setTextColor(0, 105, 217);
-  doc.text(`¡Gracias por tu confianza!`, 20, 203);
+  doc.setFontSize(22);
+  doc.setTextColor(255, 0, 0);
+  doc.text(`¡Buen Viaje!`, 20, 203);
 
   doc.save(`ticket_${ticket.value._id}.pdf`);
 
@@ -534,7 +532,7 @@ function getFechaActual() {
 }
 
 .label {
-  background-color: rgba(250, 250, 249, 0.226);
+  background-color: rgb(141, 141, 141);
   border-radius: 5px;
   border: solid gray 1px;
   margin: 8px;
