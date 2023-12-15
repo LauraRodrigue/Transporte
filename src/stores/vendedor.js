@@ -31,25 +31,26 @@ export const useVendedorStore = defineStore('vendedor', () => {
         }
     };
 
-    const putVendedorInactivar = async (id)=>{
-        try {
-            let res = await axios.put(`vendedor/inactivarVendedor/${id}`)
-            return res
-        } catch (error) {
-            console.log(error, "Error al cambiar el estado del vendedor");
+    const putInactivarVendedor = async (id)=>{
+        try{
+            let r = await axios.put(`vendedor/inactivarVendedor/${id}`)
+            return r
+        } catch (error){
+            throw error
         }
     }
-    const putVendedorActivar = async (id)=>{
+    
+    const putActivarVendedor = async (id)=>{
         try {
-            let res = await axios.put(`vendedor/activarVendedor/${id}`)
-            return res
+            let r = await axios.put(`/vendedor/activarVendedor/${id}`)
+            return r
         } catch (error) {
-            console.log(error, "Error al cambiar el estado del vendedor");
+            throw error
         }
     }
 
     return {
         vendedores,
-        obtenerInfoVendedor, postVendedor, putVendedor, putVendedorInactivar, putVendedorActivar
+        obtenerInfoVendedor, postVendedor, putVendedor, putInactivarVendedor, putActivarVendedor
     };
 });

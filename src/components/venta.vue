@@ -122,11 +122,23 @@ async function obtenerInfo() {
 async function obtenerRutas() {
   try {
     await rutaStore.obtenerInfoRutas();
-    const rutasActivas = rutaStore.rutas.filter(ruta => ruta.estado === true);
-    optionsRutas.value = rutasActivas.map((ruta) => ({
-      label: `${ruta.precio} - ${ruta.origen} - ${ruta.destino}`,
-      value: String(ruta._id),
-    }));
+    const rutasActivas = rutaStore.rutas.filter((ruta) => ruta.estado === true);
+
+    optionsRutas.value = rutasActivas.map((ruta) => {
+      const precioNumber = parseFloat(ruta.precio);
+
+      const precioFormateado = !isNaN(precioNumber)
+        ? precioNumber.toLocaleString("es-CO", {
+            style: "currency",
+            currency: "COP",
+          })
+        : ruta.precio;
+
+      return {
+        label: `${precioFormateado} - ${ruta.origen} - ${ruta.destino}`,
+        value: String(ruta._id),
+      };
+    });
   } catch (error) {
     console.log(error);
   };
@@ -214,7 +226,7 @@ async function CrearTicket() {
       greatMessage.value = "Ticket Agregado";
       generarTicket();
       showGreat();
-      generarListaAsientos()
+      generarListaAsientos() 
     } catch (error) {
       console.log(error);
       cancelShow();
@@ -355,13 +367,11 @@ function generarTicket() {
   doc.text(`-Nombre: ${ticket.value.bus_id.conductor_id.nombre}`, 20, 118);
   doc.text(`-Telefono: ${ticket.value.bus_id.conductor_id.telefono}`, 20, 126);
 
-  // Títulos
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'bold');
   doc.setFontSize(15);
   doc.text(`Informacion del bus:`, 22, 139);
 
-  //Normal
   doc.setTextColor(30, 30, 30);
   doc.setFont('Helvetica', 'normal');
   doc.setFontSize(14);
@@ -398,7 +408,6 @@ onMounted(async () => {
 let greatMessage = ref("");
 let badMessage = ref("");
 
-// Notificacion Buena
 const showGreat = () => {
   notification = $q.notify({
     spinner: false,
@@ -408,7 +417,6 @@ const showGreat = () => {
   });
 };
 
-// Notificacion Mala 
 const showBad = () => {
   notification = $q.notify({
     spinner: false,
