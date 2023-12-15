@@ -24,7 +24,7 @@
         </q-card-section>
         <q-separator />
 
-        <q-card-actions align="right">
+        <q-card-actions align= "right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar"  color="green"  @click="editarAgregarRuta()"/>
         </q-card-actions>
@@ -97,7 +97,8 @@ async function obtenerInfo() {
 async function obtenerHorarios() {
   try {
     await horarioStore.getHorario();
-    options.value = horarioStore.horarios.map((horario) => ({
+    const HorariosActivos = horarioStore.horarios.filter(ruta => ruta.estado === true);
+    options.value = HorariosActivos.map((horario) => ({
       label: `${horario.hora_partida} - ${horario.hora_llegada}`,
       value: String(horario._id),
     }));
@@ -112,28 +113,28 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "precio", label: "Precio", field: "precio", sortable: true,align:"center" },
+  { name: "precio", label: "Precio", field: "precio", sortable: true,align:"left" },
   {
     name: "hora_partida",
     label: "Hora Partida",
     field: (row) => row.horario_id.hora_partida,
-    align:"center"
+    align:"left"
   },
   {
     name: "hora_llegada",
     label: "Hora LLegada",
     field: (row) => row.horario_id.hora_llegada,
-    align:"center"
+    align:"left"
   },
-  { name: "origen", label: "Origen", field: "origen",align:"center"},
-  { name: "destino", label: "Destino", field: "destino",align:"center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"center" },
+  { name: "origen", label: "Origen", field: "origen",align:"left"},
+  { name: "destino", label: "Destino", field: "destino",align:"left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true,align:"left" },
   {
     name: "createAT",
     label: "Fecha de Creación",
     field: "createAT",
     sortable: true,
-    align:"center",
+    align:"left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   { name: "opciones", label: "Opciones", sortable: false,align:"center"},

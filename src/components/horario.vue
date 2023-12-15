@@ -10,8 +10,8 @@
         <q-separator />
 
         <q-card-section style="max-height: 50vh" @submit.prevent="validar">
-          <q-input v-model="hora_partida" label="Hora_partida" style="width: 380px;" />
-          <q-input v-model="hora_llegada" label="Hora_llegada" style="width: 380px;" />
+          <q-input v-model="hora_partida" label="Hora_partida" style="width: 380px;" @keydown.space.prevent />
+          <q-input v-model="hora_llegada" label="Hora_llegada" style="width: 380px;"  @keydown.space.prevent />
 
           <div v-if="errorMessage" style="color: red; font-size:medium; font-weight: 600;">{{ errorMessage }}</div>
 
@@ -19,7 +19,7 @@
 
         <q-separator />
 
-        <q-card-actions align="right">
+        <q-card-actions align= "right">
           <q-btn label="Cerrar" color="orange-10" v-close-popup />
           <q-btn label="Guardar" color="green" @click="agregarEditarHorario" />
         </q-card-actions>
@@ -97,12 +97,12 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: 'hora_partida', label: 'Hora_partida', field: 'hora_partida', sortable: true, align: "center" },
-  { name: 'hora_llegada', label: 'Hora_llegada', field: 'hora_llegada', sortable: true, align: "center" },
+  { name: 'hora_partida', label: 'Hora_partida', field: 'hora_partida', sortable: true, align: "left" },
+  { name: 'hora_llegada', label: 'Hora_llegada', field: 'hora_llegada', sortable: true, align: "left" },
 
-  { name: 'estado', label: 'Estado', field: 'estado', sortable: true, align: "center", format: (val) => (val ? 'Activo' : 'Inactivo') },
+  { name: 'estado', label: 'Estado', field: 'estado', sortable: true, align: "left", format: (val) => (val ? 'Activo' : 'Inactivo') },
   {
-    name: 'createAT', label: 'Fecha de Creación', field: 'createAT', sortable: true, align: "center",
+    name: 'createAT', label: 'Fecha de Creación', field: 'createAT', sortable: true, align: "left",
     format: (val) => format(new Date(val), 'yyyy-MM-dd')
   },
   {

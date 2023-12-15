@@ -90,7 +90,8 @@ function showNotification(message, type) {
 async function obtenerConductores() {
   try {
     await conductorStore.obtenerInfoConductores();
-    optionsConductores.value = conductorStore.conductores.map((conductor) => (
+    const conductoresActivos = conductorStore.conductores.filter(ruta => ruta.estado === true);
+    optionsConductores.value = conductoresActivos.map((conductor) => (
       {
         label: `${conductor.cedula} - ${conductor.nombre}`,
         value: String(conductor._id)
@@ -117,13 +118,13 @@ onMounted(async () => {
 });
 
 const columns = [
-  { name: "placa", label: "Placa", field: "placa", sortable: true, align: "center" },
+  { name: "placa", label: "Placa", field: "placa", sortable: true, align: "left" },
   { name: "numero_bus", label: "Número de Bus", field: "numero_bus", sortable: true, align: "center" },
   { name: "cantidad_asientos", label: "Cantidad de Asientos", field: "cantidad_asientos", align: "center" },
-  { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", align: "center" },
-  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "center" },
+  { name: "empresa_asignada", label: "Empresa Asignada", field: "empresa_asignada", align: "left" },
+  { name: "estado", label: "Estado", field: "estado", sortable: true, align: "left" },
   {
-    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "center",
+    name: "createAT", label: "Fecha de Creación", field: "createAT", sortable: true, align: "left",
     format: (val) => format(new Date(val), "yyyy-MM-dd"),
   },
   { name: "opciones", label: "Opciones", field: (row) => null, sortable: false, align: "center" },
