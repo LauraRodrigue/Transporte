@@ -29,6 +29,7 @@
     </q-dialog>
     <div align="center">
       <h2 align="center">Vendedor</h2>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="btn-agregar" style="margin-bottom: 5%; margin-left: -10%;">
         <q-btn color="green" label="Agregar " @click="agregarVendedor" />
       </div>
@@ -75,6 +76,7 @@ let esAgregando = ref(false);
 let claveVisible = ref("");
 let claveCambiada = ref(false);
 let notification = ref(null);
+let loading = ref(false);
 
 onMounted(async () => {
   obtenerInfo();
@@ -215,11 +217,14 @@ function validar() {
 
 async function obtenerInfo() {
   try {
-    await VendedorStore.getVendedor();
+    loading.value = true; 
+    await VendedorStore.obtenerInfoVendedor();
     vendedores.value = VendedorStore.vendedores;
     rows.value = VendedorStore.vendedores.reverse();
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   }
 }
 </script>

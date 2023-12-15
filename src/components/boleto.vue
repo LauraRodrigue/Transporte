@@ -39,6 +39,7 @@
     </q-dialog>
     <div align="center">
       <h2>Tickets</h2>
+      <q-spinner :size="50" :thickness="4" :color="loading ? 'primary' : 'transparent'" v-if="loading" />
       <div class="b-b">
         <q-input class="bbuscar" v-model="searchtieckets" label="Buscar por número de cédula del cliente" style="width: 300px" @input="filtrarticket"/>
         <q-btn color="primary" label="Buscar" @click="filtrarticket" class="btnbuscar"/>
@@ -57,6 +58,7 @@
           </q-td>
         </template>
       </q-table>
+
     </div>
   </div>
 </template>
@@ -94,6 +96,7 @@ let bus = ref("");
 let no_asiento = ref(0);
 let fecha_departida = ref("");
 let searchtieckets = ref("");
+let loading = ref(false);
 
 // Filtrar por la Cedula del Cliente
 function filtrarticket() {
@@ -107,11 +110,14 @@ function filtrarticket() {
 // Obtener Tickets
 async function obtenerInfo() {
   try {
+    loading.value = true; 
     await ticketStore.getTickets();
     tickets.value = ticketStore.ticket;
     rows.value = ticketStore.ticket.reverse();
   } catch (error) {
     console.log(error);
+  }finally {
+    loading.value = false; // Indicar que la carga ha finalizado
   };
 };
 
