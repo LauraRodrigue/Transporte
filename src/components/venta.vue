@@ -67,7 +67,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { useBusStore } from "../stores/buses.js";
@@ -201,7 +200,6 @@ async function generarListaAsientos() {
   }
 }
 
-
 let cliente_id = ref("");
 let validacionCliente = ref(null)
 
@@ -314,7 +312,6 @@ async function agregarCliente() {
 };
 
 
-
 let puestos = ref([]);
 // Buscar Asientos Disponibles
 async function validarAsientos() {
@@ -338,7 +335,6 @@ async function validarAsientos() {
     };
   };
 };
-
 
 let ticket = ref([]);
 
@@ -408,7 +404,6 @@ function generarTicket() {
   doc.text(`-Ruta del bus: ${ticket.value.ruta_id.origen} - ${ticket.value.ruta_id.destino}`, 20, 171);
   doc.text(`-Horario salida: ${ticket.value.ruta_id.horario_id.hora_partida} // Hora de llegada: ${ticket.value.ruta_id.horario_id.hora_llegada}`, 20, 179);
   doc.text(`-Fecha de Partida: ${format(new Date(ticket.value.fecha_departida), "yyyy-MM-dd")}`, 20, 187);
-
 
 
   doc.setFont('Helvetica', 'bold');
@@ -500,7 +495,6 @@ function getFechaActual() {
   return `${year}-${month}-${day}`;
 };
 
-
 </script>
 
 <style scoped>
@@ -537,3 +531,4 @@ function getFechaActual() {
   border: solid gray 1px;
   margin: 8px;
 }</style>
+
